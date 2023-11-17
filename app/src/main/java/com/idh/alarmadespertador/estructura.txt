@@ -1,0 +1,36 @@
+Listado de rutas de carpetas para el volumen OS
+El número de serie del volumen es 64E5-E754
+C:.
+|   estructura.txt
+|   MainActivity.kt
+|   
++---components
+|       NavegacionInferior.kt
+|       
++---models
+|       ItemsBottomNav.kt
+|       
++---navigation
+|       BottomNavigation.kt
+|       NavigationUtils.kt
+|       NavScreen.kt
+|       
++---screens
+|   +---alarmascreens
+|   |       AlarmaScreen.kt
+|   |       
+|   +---climascreens
+|   |       ClimaScreen.kt
+|   |       
+|   +---radioscreens
+|   |       RadioScreen.kt
+|   |       
+|   \---temporizadorscreens
+|           TemporizadorScreen.kt
+|           
+\---ui
+    \---theme
+            Color.kt
+            Theme.kt
+            Type.kt
+            
