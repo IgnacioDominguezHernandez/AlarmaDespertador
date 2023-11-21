@@ -1,4 +1,4 @@
-package com.idh.alarmadespertador.components
+package com.idh.alarmadespertador.core.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info

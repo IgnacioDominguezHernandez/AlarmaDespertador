@@ -1,4 +1,4 @@
-package com.idh.alarmadespertador.models
+package com.idh.alarmadespertador.domain.models
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DarkMode

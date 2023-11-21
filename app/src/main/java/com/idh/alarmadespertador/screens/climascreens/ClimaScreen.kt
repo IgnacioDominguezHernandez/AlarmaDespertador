@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.idh.alarmadespertador.R
-import com.idh.alarmadespertador.models.ItemsBottomNav.Itembottomnav1.icon
+import com.idh.alarmadespertador.domain.models.ItemsBottomNav.Itembottomnav1.icon
 
 
 //deberá recibir los datos del clima climaData: ClimaData

@@ -12,7 +12,7 @@ import com.idh.alarmadespertador.screens.radioscreens.RadioScreen
 import com.idh.alarmadespertador.screens.temporizadorscreens.TemporizadorScreen
 
 @Composable
-fun BottomNavigation (
+fun AppNavigation (
     navController: NavHostController
 ) {
     NavHost (

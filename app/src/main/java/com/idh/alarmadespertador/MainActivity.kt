@@ -39,10 +39,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.idh.alarmadespertador.components.NavegacionInferior
-import com.idh.alarmadespertador.components.NavegacionTopBar
-import com.idh.alarmadespertador.models.ItemsOptionsConfig.*
-import com.idh.alarmadespertador.navigation.BottomNavigation
+import com.idh.alarmadespertador.core.components.NavegacionInferior
+import com.idh.alarmadespertador.core.components.NavegacionTopBar
+import com.idh.alarmadespertador.domain.models.ItemsOptionsConfig.*
+import com.idh.alarmadespertador.navigation.AppNavigation
 import com.idh.alarmadespertador.viewmodels.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -116,7 +116,7 @@ fun Contenido (
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            BottomNavigation(navController = navController)
+            AppNavigation(navController = navController)
         }
         if (mainViewModel.showBottomSheet) {
             ModalBottomSheet(onDismissRequest = {
@@ -184,7 +184,9 @@ fun SplashScreen(navController: NavController) {
 
     LaunchedEffect(key1 = true) {
         delay(1000L)
-        navController.navigate("main_screen")
+        navController.navigate("main_screen") {
+            popUpTo("splash_screen") { inclusive = true }
+        }
     }
 
     Column(
@@ -203,29 +205,5 @@ fun SplashScreen(navController: NavController) {
     }
 }
 
-@Composable
-fun navigation() {
-
-    val navController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = "splash_screen"
-    ) {
-
-        composable("splash_screen") {
-            SplashScreen(navController = navController)
-        }
-
-        composable("main_screen") {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Main Screen", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-            }
-        }
-    }
-}
 
 

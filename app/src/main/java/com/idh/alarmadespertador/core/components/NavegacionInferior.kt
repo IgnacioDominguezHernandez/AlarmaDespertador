@@ -1,4 +1,4 @@
-package com.idh.alarmadespertador.components
+package com.idh.alarmadespertador.core.components
 
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -8,7 +8,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.idh.alarmadespertador.models.ItemsBottomNav.*
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.idh.alarmadespertador.domain.models.ItemsBottomNav.*
 import com.idh.alarmadespertador.navigation.currentRoute
 
 //@Composable: parte de la UI de Jetpack Compose. Puede ser reutilizada en diferentes partes de la aplicación
@@ -35,7 +36,12 @@ fun NavegacionInferior (
                 val selected = currentRoute(navController) == item.ruta
                 NavigationBarItem(selected = selected,
                     //Para cada NavigationBarItem, se establece un onClick que cambia la navegación a la ruta asociada con ese ítem
-                    onClick = { navController.navigate(item.ruta) },
+                    onClick = { navController.navigate(item.ruta) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    } },
                     //Se muestra un icono y un texto para cada ítem, basados en las propiedades del objeto del menú.
                     icon = {
                         Icon(imageVector = item.icon,
