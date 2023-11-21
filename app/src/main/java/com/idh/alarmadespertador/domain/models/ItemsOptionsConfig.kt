@@ -6,6 +6,7 @@ import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.idh.alarmadespertador.navigation.NavScreen
 
+//Lo mismo que ItemsBottomNav pero para Settings
 sealed class ItemsOptionsConfig (
     val icon: ImageVector,
     val title : String,

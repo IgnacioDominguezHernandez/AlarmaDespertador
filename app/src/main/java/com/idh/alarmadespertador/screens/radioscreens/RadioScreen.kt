@@ -20,13 +20,13 @@ fun RadioScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Imagina que esto es un icono representativo de radio
+        // Cualquier icono representativo de radio
         Image(
             painter = painterResource(id = R.drawable.radiominimalista),
             contentDescription = "Icono de Radio",
             modifier = Modifier.size(250.dp)
         )
         Text(text = "Estación de Radio XYZ")
-        // Aquí podrías agregar botones de control de la radio
+        // Aquí agregamos botones de control de la radio
     }
 }

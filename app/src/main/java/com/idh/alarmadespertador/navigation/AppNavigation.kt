@@ -11,6 +11,10 @@ import com.idh.alarmadespertador.screens.climascreens.ClimaScreen
 import com.idh.alarmadespertador.screens.radioscreens.RadioScreen
 import com.idh.alarmadespertador.screens.temporizadorscreens.TemporizadorScreen
 
+/* Cada llamada a Composable define una ruta y su pantalla asociada. Por ejemplo, composable(NavScreen.AlarmScreen.name)
+   { AlarmaScreen() } define la ruta para la pantalla de alarma.
+    Estas rutas utilizan el enum NavScreen para nombrar cada ruta. */
+
 @Composable
 fun AppNavigation (
     navController: NavHostController

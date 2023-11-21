@@ -57,9 +57,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-/*Dentro de MyApp, se configura un NavController se usa un Scaffold para estructurar la UI,
-incluyendo una barra de navegación inferior (BottomNavigationBar).*/
-@OptIn(ExperimentalMaterial3Api::class)
+/* Función composable que configura la navegación de la aplicación utilizando NavHost.
+   rememberNavController crea y recuerda un NavController que gestiona la navegación entre composables.
+   NavHost define la navegación entre diferentes pantallas de la aplicación, con "splash_screen" como la pantalla de inicio. */
+
 @Composable
 fun MyApp() {
         val navController = rememberNavController()
@@ -80,22 +81,20 @@ fun MyApp() {
         }
 }
 
-/*
-@Composable
-fun BottomNavigationBar(navController: NavController) {
-    // Implementa tu BottomAppBar aquí
-    // Usa navController.navigate("destino") para manejar la navegación
-}
- */
+/*  Es un composable que define la pantalla principal de la aplicación.
+    Llama a Contenido, pasando un nuevo NavController. */
 
 @Composable
 fun MainScreen() {
 
     val navController = rememberNavController()
     Contenido(navController = navController)
+
 }
 
-
+/*  Composable que define la estructura básica de la interfaz de usuario utilizando Scaffold.
+    Configura la barra superior (NavegacionTopBar) y la barra de navegación inferior (NavegacionInferior).
+    Utiliza AppNavigation para gestionar el contenido principal de las pantallas, basándose en la navegación. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Contenido (
@@ -127,6 +126,11 @@ fun Contenido (
         }
     }
 }
+
+
+/*  Composable que muestra una hoja modal en la parte inferior de la pantalla con opciones de configuración.
+    Utiliza un Column para organizar los elementos verticalmente y un Row para los elementos de configuración.
+    Cada elemento de configuración es clickeable y navega a la ruta correspondiente. */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -170,14 +174,9 @@ fun ContentBottomSheet(
     }
 }
 
-/*En SplashScreen, se utiliza LaunchedEffect para realizar
-una acción una vez que este Composable se ha lanzado. Aquí, el efecto causa un
-retraso de X segundo (delay(xxxL)) y luego navega a "main_screen" El SplashScreen
-se mostrará inicialmente debido a que es el startDestination en el NavHost*/
-
-//Para mirar
-/*Considerar si hay alguna inicialización de la aplicación que deba ocurrir durante
-el SplashScreen. Este es un buen momento para realizar operaciones de carga inicial.*/
+/*  Es un composable que actúa como pantalla de bienvenida (splash).
+    Usa LaunchedEffect para ejecutar una acción después de un retraso (delay), en este caso, navegar a la pantalla principal.
+    Muestra una imagen (reloj) mientras se encuentra en pantalla. */
 
 @Composable
 fun SplashScreen(navController: NavController) {

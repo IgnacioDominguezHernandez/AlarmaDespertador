@@ -26,6 +26,7 @@ import com.idh.alarmadespertador.viewmodels.MainViewModel
 @Composable
 fun NavegacionTopBar(navController: NavHostController) {
 
+    //variable de estado (mutableStateOf) que controla la visibilidad de un menú desplegable
     val (showPuntos, setShowPuntos) = remember { mutableStateOf(false) }
     val mainViewModel : MainViewModel = viewModel()
     TopAppBar(

@@ -15,3 +15,4 @@ Este estado se actualiza automáticamente cuando la navegación cambia (por ejem
 el usuario navega a una pantalla diferente). navBackStackEntry.value?.destination?.route obtiene
 la ruta de la entrada actual de la pila de navegación
  Esta ruta es un String que identifica la pantalla actual en el sistema de navegación */
+// Es decir la puedo usar en cualquier lugar en el que necesite conocer la ruta actual

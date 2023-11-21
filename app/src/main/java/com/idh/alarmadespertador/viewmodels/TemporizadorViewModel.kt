@@ -14,10 +14,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TemporizadorViewModel @Inject constructor(
-    private val repo: TemporizadorRepository
+    private val repo: TemporizadorRepository //Para interactuar con la base de datos
 ) : ViewModel () {
     var openDialog by mutableStateOf(false)
     val temporizador = repo.getTemporizadorFromRoom()
+
+
+    //Para realizar operaciones asíncronas
     fun addTemporizador(temporizador: Temporizador) = viewModelScope.launch(Dispatchers.IO)
     {
         repo.addTemporizadorToRoom(temporizador)

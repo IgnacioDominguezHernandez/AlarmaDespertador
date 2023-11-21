@@ -17,10 +17,15 @@ import androidx.compose.runtime.collectAsState
 fun TemporizadorScreen(
     viewModel: TemporizadorViewModel = hiltViewModel()
 ) {
+
+
     val temporizadores by viewModel.temporizador.collectAsState(
         initial = emptyList())
 
     Text(text = "HOLA")
+
+
+
 }
 
 
