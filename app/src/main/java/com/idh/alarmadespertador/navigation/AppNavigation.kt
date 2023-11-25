@@ -2,14 +2,18 @@ package com.idh.alarmadespertador.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_ID
 import com.idh.alarmadespertador.screens.ConfigurarApariencia
 import com.idh.alarmadespertador.screens.ConfigurarFormato
 import com.idh.alarmadespertador.screens.alarmascreen.AlarmaScreen
 import com.idh.alarmadespertador.screens.climascreens.ClimaScreen
 import com.idh.alarmadespertador.screens.radioscreens.RadioScreen
 import com.idh.alarmadespertador.screens.temporizadorscreens.TemporizadorScreen
+import com.idh.alarmadespertador.screens.temporizadorscreens.updatetemporizador.UpdateTemporizadorScreen
 
 /* Cada llamada a Composable define una ruta y su pantalla asociada. Por ejemplo, composable(NavScreen.AlarmScreen.name)
    { AlarmaScreen() } define la ruta para la pantalla de alarma.
@@ -30,7 +34,13 @@ fun AppNavigation (
             RadioScreen()
         }
         composable(NavScreen.TemporizadorScreen.name) {
-            TemporizadorScreen()
+            TemporizadorScreen(
+                navigateToUpdateTemporizadorScreen = { temporizadorId ->
+                    // Usando DynamicNavRoutes para generar la ruta
+                    val route = DynamicNavRoutes.updateTemporizadorScreen(temporizadorId)
+                    navController.navigate(route)
+                }
+            )
         }
         composable(NavScreen.ClimaScreen.name) {
             ClimaScreen()
@@ -41,6 +51,21 @@ fun AppNavigation (
         composable(NavScreen.ConfigurarFormato.name) {
             ConfigurarFormato()
         }
-
+        composable(
+            route = "rutaDeUpdateTemporizadorScreen/{temporizadorId}", // Usa la ruta directamente
+            arguments = listOf(
+                navArgument("temporizadorId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            val temporizadorId = backStackEntry.arguments?.getInt("temporizadorId") ?: 0
+            UpdateTemporizadorScreen(
+                temporizadorId = temporizadorId,
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }

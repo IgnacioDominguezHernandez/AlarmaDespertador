@@ -3,7 +3,7 @@ package com.idh.alarmadespertador.di
 import android.content.Context
 import androidx.room.Room
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_TABLE
-import com.idh.alarmadespertador.data.network.TemporizadorDB
+import com.idh.alarmadespertador.data.network.AplicacionDB
 import com.idh.alarmadespertador.data.network.TemporizadorDao
 import com.idh.alarmadespertador.data.repository.TemporizadorRepositoryImpl
 import com.idh.alarmadespertador.domain.repository.TemporizadorRepository
@@ -24,21 +24,26 @@ class AppModule {
     la clase de la base de datos (TemporizadorDB::class.java), y el nombre de la base de datos (en este caso,
     el nombre de la tabla TEMPORIZADOR_TABLE */
     @Provides
-    fun provideTemporizadorDb(
-        @ApplicationContext
-        context: Context
-    ) = Room.databaseBuilder(
-        context,
-        TemporizadorDB::class.java,
-        TEMPORIZADOR_TABLE
-    ).build()
+    fun provideAplicacionDb(
+        @ApplicationContext context: Context
+    ): AplicacionDB {
+        return Room.databaseBuilder(
+            context,
+            AplicacionDB::class.java,
+            "aplicacion_db" // Nombre de tu base de datos
+        )
+            .fallbackToDestructiveMigration() // Opción para migraciones destructivas
+            .build()
+    }
 
     /* Esta función crea y proporciona una instancia del DAO (TemporizadorDao) asociado con la base de datos Room. Recibe
     como parámetro una instancia de TemporizadorDB y llama a temporizadorDao() para obtener el DAO.*/
     @Provides
     fun provideTemporizadorDao(
-        temporizadorDB: TemporizadorDB
-    ) = temporizadorDB.temporizadorDao()
+        db: AplicacionDB
+    ): TemporizadorDao {
+        return db.temporizadorDao()
+    }
 
     /* Aquí se provee una instancia de TemporizadorRepository, específicamente TemporizadorRepositoryImpl.
     Esta función toma TemporizadorDao como parámetro y lo utiliza para crear una nueva
@@ -46,8 +51,8 @@ class AppModule {
     @Provides
     fun provideTemporizadorRepository(
         temporizadorDao: TemporizadorDao
-    ): TemporizadorRepository = TemporizadorRepositoryImpl(
-        temporizadorDao = temporizadorDao
-    )
+    ): TemporizadorRepository {
+        return TemporizadorRepositoryImpl(temporizadorDao)
+    }
 
 }

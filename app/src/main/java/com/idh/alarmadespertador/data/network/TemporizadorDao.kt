@@ -1,9 +1,11 @@
 package com.idh.alarmadespertador.data.network
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Ignore
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_TABLE
 import com.idh.alarmadespertador.domain.models.Temporizador
 import com.idh.alarmadespertador.domain.repository.Temporizadores
@@ -28,6 +30,14 @@ interface TemporizadorDao {
     fun addTemporizador(temporizador: Temporizador)
 
     //getTemporizador
+    @Query("SELECT * FROM $TEMPORIZADOR_TABLE WHERE id = :id")
+    fun getTemporizador(id: Int): Temporizador
+
     //updateTemporizador
+    @Update
+    fun updateTemporizador(temporizador: Temporizador)
+
     //deleteTemporizador
+    @Delete
+    fun deleteTemporizador(temporizador: Temporizador)
 }

@@ -14,11 +14,11 @@ interface TemporizadorRepository {
     fun getTemporizadorFromRoom() : Flow<Temporizadores>
 
     fun addTemporizadorToRoom(temporizador: Temporizador)
-    // getTemporizadorFromRoom
+
     fun getTemporizadorFromRoom(id: Int): Temporizador
-    //updateMascotaInRoom
+
     fun updateTemporizadorInRoom(temporizador: Temporizador)
-    //deleteMascotaFromRoom
+
     fun deleteTemporizadorFromRoom(temporizador: Temporizador)
 
 

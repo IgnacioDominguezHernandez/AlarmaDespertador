@@ -19,23 +19,19 @@ class TemporizadorRepositoryImpl (
     override fun getTemporizadorFromRoom() = temporizadorDao.getTemporizador()
 
     //Aquí un temporizador específico
-    override fun getTemporizadorFromRoom(id: Int): Temporizador {
-        TODO("Not yet implemented")
-    }
+    override fun getTemporizadorFromRoom(id: Int): Temporizador = temporizadorDao.getTemporizador(id)
 
     //Añade un nuevo temporizador
     override fun addTemporizadorToRoom(temporizador: Temporizador) =
         temporizadorDao.addTemporizador(temporizador)
 
     //Actualiza un temporizador
-    override fun updateTemporizadorInRoom(temporizador: Temporizador) {
-        TODO("Not yet implemented")
-    }
+    override fun updateTemporizadorInRoom(temporizador: Temporizador) =
+        temporizadorDao.updateTemporizador(temporizador)
 
     //Borra un temporizador
     override fun deleteTemporizadorFromRoom(temporizador: Temporizador) {
-        TODO("Not yet implemented")
+        temporizadorDao.deleteTemporizador(temporizador)
     }
-
 }
 

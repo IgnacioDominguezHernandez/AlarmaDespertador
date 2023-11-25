@@ -23,16 +23,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -44,10 +41,11 @@ import com.idh.alarmadespertador.core.components.NavegacionTopBar
 import com.idh.alarmadespertador.domain.models.ItemsOptionsConfig.*
 import com.idh.alarmadespertador.navigation.AppNavigation
 import com.idh.alarmadespertador.viewmodels.MainViewModel
-import kotlinx.coroutines.CoroutineScope
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +82,7 @@ fun MyApp() {
 /*  Es un composable que define la pantalla principal de la aplicación.
     Llama a Contenido, pasando un nuevo NavController. */
 
+
 @Composable
 fun MainScreen() {
 
@@ -95,6 +94,7 @@ fun MainScreen() {
 /*  Composable que define la estructura básica de la interfaz de usuario utilizando Scaffold.
     Configura la barra superior (NavegacionTopBar) y la barra de navegación inferior (NavegacionInferior).
     Utiliza AppNavigation para gestionar el contenido principal de las pantallas, basándose en la navegación. */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Contenido (
@@ -126,7 +126,6 @@ fun Contenido (
         }
     }
 }
-
 
 /*  Composable que muestra una hoja modal en la parte inferior de la pantalla con opciones de configuración.
     Utiliza un Column para organizar los elementos verticalmente y un Row para los elementos de configuración.
