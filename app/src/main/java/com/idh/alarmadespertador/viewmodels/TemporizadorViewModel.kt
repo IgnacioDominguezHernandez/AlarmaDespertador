@@ -1,16 +1,21 @@
 package com.idh.alarmadespertador.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.NO_VALUE
+import com.idh.alarmadespertador.domain.models.EstadoReloj
+import com.idh.alarmadespertador.domain.models.EstadoReloj.*
 import com.idh.alarmadespertador.domain.models.Temporizador
 import com.idh.alarmadespertador.domain.repository.TemporizadorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,11 +26,11 @@ class TemporizadorViewModel @Inject constructor(
     var temporizador by mutableStateOf(
         Temporizador(
             0,
-            NO_VALUE,
-            NO_VALUE,
-            NO_VALUE,
-            NO_VALUE,
-            true
+            0,
+            NO_VALUE, //Nombre
+            false, //Vibracion
+            NO_VALUE, //uri para musica
+            ACTIVO //estado timer
         )
     )
 
@@ -52,27 +57,33 @@ class TemporizadorViewModel @Inject constructor(
             repo.deleteTemporizadorFromRoom(temporizador)
         }
 
+    fun updateMilisegundos(milisegundos: Int) {
+        temporizador = temporizador.copy(
+            milisegundos = milisegundos
+        )
+    }
+
     fun updateNombreTemporizador(n: String) {
         temporizador = temporizador.copy(
             nombreTemporizador = n
         )
     }
 
-    fun updateHora(hora: String) {
+    fun updateVibracion(vibracion: Boolean) {
         temporizador = temporizador.copy(
-            horas = hora
+            vibracion = vibracion
         )
     }
 
-    fun updateMinutos(minutos: String) {
+    fun updateSonidoUri(sonidoUri: String) {
         temporizador = temporizador.copy(
-            minutos = minutos
+            sonidoUri = sonidoUri
         )
     }
 
-    fun updateSegundos(segundos: String) {
+    fun updateEstado(estadoTemp : EstadoReloj) {
         temporizador = temporizador.copy(
-            segundos = segundos
+            estadoTemp = estadoTemp
         )
     }
 
@@ -85,7 +96,9 @@ class TemporizadorViewModel @Inject constructor(
         Dispatchers.IO
     )
     {
-        temporizador = repo.getTemporizadorFromRoom(id)
+        val loadedTemporizador = repo.getTemporizadorFromRoom(id)
+        temporizador = loadedTemporizador
+        Log.d("TemporizadorViewModel", "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}")
     }
 
 }

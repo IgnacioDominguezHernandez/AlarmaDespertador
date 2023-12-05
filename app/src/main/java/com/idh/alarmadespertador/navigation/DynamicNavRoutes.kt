@@ -6,3 +6,6 @@ object DynamicNavRoutes {
      // fun updateAlarmaScreen(alarmaId: Int) = "updateAlarmaScreen/$alarmaId"
 
 }
+
+
+

@@ -1,8 +1,6 @@
 package com.idh.alarmadespertador.data.network
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.idh.alarmadespertador.domain.models.Temporizador
 

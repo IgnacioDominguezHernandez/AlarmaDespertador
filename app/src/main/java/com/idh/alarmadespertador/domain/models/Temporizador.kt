@@ -10,9 +10,9 @@ import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADO
 data class Temporizador(
     @PrimaryKey (autoGenerate = true)
     val id: Int,
+    val milisegundos : Int,
     val nombreTemporizador: String,
-    val horas : String,
-    val minutos : String,
-    val segundos : String,
-    val estado : Boolean
+    val vibracion : Boolean,
+    val sonidoUri : String,
+    var estadoTemp: EstadoReloj
 )

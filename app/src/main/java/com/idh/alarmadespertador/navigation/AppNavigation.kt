@@ -42,6 +42,17 @@ fun AppNavigation (
                 }
             )
         }
+        composable(
+            route = "updateTemporizadorScreen/{temporizadorId}",
+            arguments = listOf(navArgument("temporizadorId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val temporizadorId = backStackEntry.arguments?.getInt("temporizadorId") ?: 0
+            UpdateTemporizadorScreen(
+                temporizadorId = temporizadorId,
+                navigateBack = { navController.popBackStack() }
+            )
+        }
+
         composable(NavScreen.ClimaScreen.name) {
             ClimaScreen()
         }
