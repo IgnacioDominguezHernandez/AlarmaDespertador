@@ -1,5 +1,6 @@
 package com.idh.alarmadespertador.screens.temporizadorscreens.components
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,59 +26,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.idh.alarmadespertador.domain.models.EstadoReloj
 import com.idh.alarmadespertador.domain.models.Temporizador
-import com.idh.alarmadespertador.screens.temporizadorscreens.components.PlayPauseIcons
-
-@Preview(showBackground = true, name = "Temporizador Card Preview")
-@Composable
-fun TemporizadorCardPreview() {
-    // Crear un temporizador de ejemplo
-    val temporizadorEjemplo = Temporizador(
-        id = 1,
-        milisegundos = 3600000, // 1 hora en milisegundos
-        nombreTemporizador = "Temporizador Ejemplo",
-        vibracion = false,
-        sonidoUri = "uri_de_ejemplo",
-        estadoTemp = EstadoReloj.ACTIVO
-    )
-
-    // Simular funciones que se pasarían normalmente al TemporizadorCard
-    val deleteTemporizador = { /* acción de eliminar */ }
-    val navigateToUpdateTemporizadorScreen = { _: Int -> /* acción de navegación */ }
-    val onPlayPause = { _: EstadoReloj -> /* acción de play/pause */ }
-
-    TemporizadorCard(
-        temporizador = temporizadorEjemplo,
-        deleteTemporizador = deleteTemporizador,
-        navigateToUpdateTemporizadorScreen = navigateToUpdateTemporizadorScreen,
-
-    )
-}
+import com.idh.alarmadespertador.viewmodels.TemporizadorViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun TemporizadorCard(
-    temporizador: Temporizador,
+    temporizador: Temporizador, // Pasa el objeto Temporizador completo
     deleteTemporizador: () -> Unit,
     navigateToUpdateTemporizadorScreen: (temporizadorId: Int) -> Unit,
-    modifier: Modifier = Modifier,
+    onPlayPause: (Int ,EstadoReloj) -> Unit,
+    onFinish: () -> Unit,
+    viewModel: TemporizadorViewModel
 ) {
 
-    // Convertir milisegundos a horas, minutos y segundos
-    val horas = temporizador.milisegundos / 3600000
-    val minutos = (temporizador.milisegundos % 3600000) / 60000
-    val segundos = (temporizador.milisegundos % 60000) / 1000
+    // Observa los cambios en el estado del temporizador específico
+    val temporizadorState by viewModel.temporizadorState.collectAsState()
+    val actualizadoTemporizador = temporizadorState[temporizador.id] ?: temporizador
 
-    var remainingTime by remember { mutableStateOf(temporizador.milisegundos) }
-    var timerState by remember { mutableStateOf(temporizador.estadoTemp) }
-
-    // Lógica del contador regresivo
-    LaunchedEffect(timerState) {
-        if (timerState == EstadoReloj.ACTIVO) {
-            // Aquí, decrementar remainingTime cada segundo
-        }
+    LaunchedEffect(actualizadoTemporizador.estadoTemp) {
+        Log.d("TemporizadorCard", "Estado Temporizador actualizado: ${actualizadoTemporizador.estadoTemp}")
+        // Esto forzará la reconstrucción del composable cuando el estado cambie
     }
+
+    // Cálculos basados en el temporizador actualizado
+    val horas = actualizadoTemporizador.milisegundos / 3600000
+    val minutos = (actualizadoTemporizador.milisegundos % 3600000) / 60000
+    val segundos = (actualizadoTemporizador.milisegundos % 60000) / 1000
+    val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundos)
 
     Card(
         shape = MaterialTheme.shapes.medium,
@@ -89,7 +69,7 @@ fun TemporizadorCard(
             )
             .fillMaxWidth()
             .combinedClickable(
-                onClick = { /* Acción para un clic normal, si es necesario */ },
+                onClick = { /*  */ },
                 onLongClick = {
                     navigateToUpdateTemporizadorScreen(temporizador.id)
                 }
@@ -107,7 +87,7 @@ fun TemporizadorCard(
                 // Usar Row en lugar de Column para mostrar horas, minutos y segundos en una línea
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     // Formatear el tiempo en un formato de cuenta regresiva
-                    val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundos)
+                    //  val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundos)
                     Text(
                         text = tiempoFormateado,
                         style = MaterialTheme.typography.headlineMedium.copy(fontSize = 44.sp), // Aumentar el tamaño de la fuente
@@ -125,9 +105,16 @@ fun TemporizadorCard(
 
                 Spacer(modifier = Modifier.width(38.dp))
 
+                PlayPauseIcons(
+                    temporizadorId = actualizadoTemporizador.id,
+                    estadoTemporizador = actualizadoTemporizador.estadoTemp,
+                    onPlayPause = onPlayPause
+                )
+
+            }
+                if (actualizadoTemporizador.estadoTemp == EstadoReloj.COMPLETADO) {
+                    onFinish()
+                }
             }
         }
     }
-}
-
-

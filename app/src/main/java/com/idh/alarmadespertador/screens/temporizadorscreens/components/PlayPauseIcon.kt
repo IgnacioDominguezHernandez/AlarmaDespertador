@@ -1,5 +1,6 @@
 package com.idh.alarmadespertador.screens.temporizadorscreens.components
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -10,20 +11,18 @@ import com.idh.alarmadespertador.domain.models.EstadoReloj
 
 @Composable
 fun PlayPauseIcons(
-    estadoTemporizador: EstadoReloj, // El estado actual del temporizador
-    onPlayPause: (EstadoReloj) -> Unit // Callback para actualizar el estado del temporizador
+    temporizadorId: Int,
+    estadoTemporizador: EstadoReloj,
+    onPlayPause: (Int, EstadoReloj) -> Unit
 ) {
-    when (estadoTemporizador) {
-        EstadoReloj.ACTIVO -> {
-            IconButton(onClick = { onPlayPause(EstadoReloj.PAUSADO) }) {
-                Icon(imageVector = Icons.Default.Pause, contentDescription = "Pausar")
-            }
-        }
-        EstadoReloj.PAUSADO -> {
-            IconButton(onClick = { onPlayPause(EstadoReloj.ACTIVO) }) {
-                Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Reproducir")
-            }
-        }
-        else -> Unit // No mostrar botones para otros estados, como COMPLETADO
+    IconButton(onClick = {
+        val nuevoEstado = if (estadoTemporizador == EstadoReloj.ACTIVO) EstadoReloj.PAUSADO else EstadoReloj.ACTIVO
+        Log.d("PlayPauseInteraction", "Clic en PlayPause: Estado actual: $estadoTemporizador, Nuevo estado: $nuevoEstado")
+        onPlayPause(temporizadorId, nuevoEstado) // Primero el ID, luego el estado
+    }) {
+        val icono = if (estadoTemporizador == EstadoReloj.ACTIVO) Icons.Default.Pause else Icons.Default.PlayArrow
+        Icon(imageVector = icono, contentDescription = if (estadoTemporizador == EstadoReloj.ACTIVO) "Pausar" else "Reproducir")
     }
 }
+
+

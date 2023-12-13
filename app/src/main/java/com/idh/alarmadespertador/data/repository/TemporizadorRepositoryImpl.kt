@@ -33,5 +33,9 @@ class TemporizadorRepositoryImpl (
     override fun deleteTemporizadorFromRoom(temporizador: Temporizador) {
         temporizadorDao.deleteTemporizador(temporizador)
     }
+
+    override fun updateTemporizadoresInRoom(temporizadores: List<Temporizador>) {
+        temporizadorDao.updateTemporizadores(temporizadores)
+    }
 }
 

@@ -84,6 +84,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:x.y.z")
+
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation ("androidx.compose.material3:material3:1.1.2@aar (classes.jar)")
     //iconos extendidos

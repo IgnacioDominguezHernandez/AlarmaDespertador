@@ -41,4 +41,8 @@ interface TemporizadorDao {
     //deleteTemporizador
     @Delete
     fun deleteTemporizador(temporizador: Temporizador)
+
+    //Actualizar todos los temporizadore
+    @Update
+    fun updateTemporizadores(temporizadores: List<Temporizador>)
 }

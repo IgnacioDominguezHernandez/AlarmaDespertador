@@ -10,7 +10,6 @@ datos sin preocuparse por los detalles de implementación de cómo se almacenan 
 
 typealias Temporizadores = List<Temporizador>
 interface TemporizadorRepository {
-
     fun getTemporizadorFromRoom() : Flow<Temporizadores>
 
     fun addTemporizadorToRoom(temporizador: Temporizador)
@@ -21,5 +20,6 @@ interface TemporizadorRepository {
 
     fun deleteTemporizadorFromRoom(temporizador: Temporizador)
 
-
+    fun updateTemporizadoresInRoom(temporizadores: Temporizadores)
 }
+
