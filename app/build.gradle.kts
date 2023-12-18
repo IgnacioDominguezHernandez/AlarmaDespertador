@@ -98,5 +98,15 @@ dependencies {
     //Hilt
     implementation("com.google.dagger:hilt-android:2.48.1")
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
+    //Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    //Gson
+    implementation ("com.google.code.gson:gson:2.10.1")
+
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
+
 
 }

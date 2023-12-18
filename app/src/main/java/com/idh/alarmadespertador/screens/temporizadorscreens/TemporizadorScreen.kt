@@ -28,7 +28,6 @@ fun TemporizadorScreen(
 
     Log.d("TemporizadorScreen", "Temporizadores en pantalla: ${temporizadorState.value.size}")
 
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
             // Aquí, convertimos el mapa de temporizadores a una lista

@@ -1,8 +1,9 @@
 package com.idh.alarmadespertador.core.constants
 
 
-//Esta clase almacena constantes globales que se utilizan en toda la aplicación.
 class Constantes {
+
+
     companion object{
         //Room
         const val TEMPORIZADOR_TABLE = "temporizador_table"
@@ -10,6 +11,11 @@ class Constantes {
         //Screens
         const val TEMPORIZADOR_SCREEN = "Temporizador"
         const val UPDATE_TEMPORIZADOR_SCREEN = "Update Temporizador"
+        const val ALARMA_SCREEN = "Alarma"
+        const val RADIO_SCREEN = "Radio"
+        const val CLIMA_SCREEN = "Clima"
+        const val CONFIGURAR_APARIENCIA = "Configurar Apariencia"
+        const val CONFIGURAR_FORMATO = "Configurar Formato"
 
         //Arguments
         const val  TEMPORIZADOR_ID = "temporizadorId"

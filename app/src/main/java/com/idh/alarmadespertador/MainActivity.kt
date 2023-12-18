@@ -45,6 +45,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+//my weather API key dde270949a52c73fd2860b9a6d679bf9
+//my weather APIname API_Weather_FP
+//icon URL :  https://openweathermap.org/img/wn/10d@2x.png
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

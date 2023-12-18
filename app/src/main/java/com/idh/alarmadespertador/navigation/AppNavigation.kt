@@ -5,8 +5,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.ALARMA_SCREEN
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.CLIMA_SCREEN
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.RADIO_SCREEN
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_ID
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_SCREEN
 import com.idh.alarmadespertador.screens.ConfigurarApariencia
 import com.idh.alarmadespertador.screens.ConfigurarFormato
 import com.idh.alarmadespertador.screens.alarmascreen.AlarmaScreen
@@ -78,5 +83,20 @@ fun AppNavigation (
                 }
             )
         }
+    }
+}
+
+@Composable
+fun getCurrentScreenTitle(navController: NavHostController): String {
+    // Obtiene el destino actual de la navegación
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination
+
+    return when (currentDestination?.route) {
+        NavScreen.AlarmScreen.name -> ALARMA_SCREEN
+        NavScreen.RadioScreen.name -> RADIO_SCREEN
+        NavScreen.TemporizadorScreen.name -> TEMPORIZADOR_SCREEN
+        NavScreen.ClimaScreen.name -> CLIMA_SCREEN
+        // Añadir aquí más casos para otras pantallas
+        else -> "Aplicación"
     }
 }

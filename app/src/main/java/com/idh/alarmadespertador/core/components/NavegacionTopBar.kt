@@ -20,17 +20,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.idh.alarmadespertador.navigation.getCurrentScreenTitle
 import com.idh.alarmadespertador.viewmodels.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavegacionTopBar(navController: NavHostController) {
 
+    val title = getCurrentScreenTitle(navController)
     //variable de estado (mutableStateOf) que controla la visibilidad de un menú desplegable
     val (showPuntos, setShowPuntos) = remember { mutableStateOf(false) }
     val mainViewModel : MainViewModel = viewModel()
     TopAppBar(
-        title = { Text(text = "Alarma") },
+        title = { Text(text = title) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
         ),
