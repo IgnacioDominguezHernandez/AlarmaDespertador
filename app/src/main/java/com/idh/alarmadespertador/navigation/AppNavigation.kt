@@ -10,11 +10,10 @@ import androidx.navigation.navArgument
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ALARMA_SCREEN
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.CLIMA_SCREEN
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.RADIO_SCREEN
-import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_ID
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_SCREEN
 import com.idh.alarmadespertador.screens.ConfigurarApariencia
 import com.idh.alarmadespertador.screens.ConfigurarFormato
-import com.idh.alarmadespertador.screens.alarmascreen.AlarmaScreen
+import com.idh.alarmadespertador.screens.alarmascreens.AlarmaScreen
 import com.idh.alarmadespertador.screens.climascreens.ClimaScreen
 import com.idh.alarmadespertador.screens.radioscreens.RadioScreen
 import com.idh.alarmadespertador.screens.temporizadorscreens.TemporizadorScreen

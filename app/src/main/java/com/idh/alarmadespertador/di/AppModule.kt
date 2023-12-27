@@ -3,9 +3,12 @@ package com.idh.alarmadespertador.di
 import android.content.Context
 import androidx.room.Room
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_TABLE
+import com.idh.alarmadespertador.data.network.AlarmaDao
 import com.idh.alarmadespertador.data.network.AplicacionDB
 import com.idh.alarmadespertador.data.network.TemporizadorDao
+import com.idh.alarmadespertador.data.repository.AlarmaRepositoryImpl
 import com.idh.alarmadespertador.data.repository.TemporizadorRepositoryImpl
+import com.idh.alarmadespertador.domain.repository.AlarmaRepository
 import com.idh.alarmadespertador.domain.repository.TemporizadorRepository
 import dagger.Module
 import dagger.Provides
@@ -53,6 +56,20 @@ class AppModule {
         temporizadorDao: TemporizadorDao
     ): TemporizadorRepository {
         return TemporizadorRepositoryImpl(temporizadorDao)
+    }
+
+    /* Esta función crea y proporciona una instancia del DAO (AlarmaDao) asociado con la base de datos Room.
+Recibe como parámetro una instancia de AplicacionDB y llama a alarmaDao() para obtener el DAO. */
+    @Provides
+    fun provideAlarmaDao(db: AplicacionDB): AlarmaDao {
+        return db.alarmaDao()
+    }
+
+    /* Aquí se provee una instancia de AlarmaRepository, específicamente AlarmaRepositoryImpl.
+    Esta función toma AlarmaDao como parámetro y lo utiliza para crear una nueva instancia de AlarmaRepositoryImpl */
+    @Provides
+    fun provideAlarmaRepository(alarmaDao: AlarmaDao): AlarmaRepository {
+        return AlarmaRepositoryImpl(alarmaDao)
     }
 
 }

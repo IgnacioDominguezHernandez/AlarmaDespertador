@@ -1,5 +1,8 @@
 package com.idh.alarmadespertador.screens.climascreens
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,9 +40,35 @@ fun ClimaScreen(climaViewModel: ClimaViewModel = hiltViewModel()) {
 
     var searchText by remember { mutableStateOf("") }
 
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { permissions ->
+            if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                // Permiso concedido, puedes cargar la información del clima
+                climaViewModel.loadWeatherInfo()
+            } else {
+                // Manejar el caso de permiso no concedido
+                // Mostrar algún mensaje o interfaz de usuario alternativa
+            }
+        }
+    )
+
+    LaunchedEffect(Unit) {
+        locationPermissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+    }
+
+    /*
     LaunchedEffect(Unit) {
         climaViewModel.loadWeatherInfo()
     }
+
+     */
 
     val state = climaViewModel.state
 
@@ -125,7 +154,6 @@ fun SearchBar(
         modifier = Modifier.fillMaxWidth()
     )
 }
-
 
 @Composable
 fun WeatherCard(weatherData: ClimaData) {

@@ -7,6 +7,7 @@ class Constantes {
     companion object{
         //Room
         const val TEMPORIZADOR_TABLE = "temporizador_table"
+        const val ALARMA_TABLE = "alarma_table"
 
         //Screens
         const val TEMPORIZADOR_SCREEN = "Temporizador"

@@ -1,61 +1,51 @@
-package com.idh.alarmadespertador.screens.alarmascreen
+package com.idh.alarmadespertador.screens.alarmascreens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import com.idh.alarmadespertador.R
-
-
-
-    //Aqui tengo que poner el Botón Flotante y un LazyColumn
-    //con las alarmas que el usuario vaya poniendo
-
-    //Esta clase define la interfaz de usuario para la pantalla de alarma de la aplicación
-    //Composable, lo que significa que define una parte de la UI de la aplicación.
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.idh.alarmadespertador.screens.alarmascreens.components.AddAlarmaDialog
+import com.idh.alarmadespertador.screens.alarmascreens.components.AlarmaCard
+import com.idh.alarmadespertador.viewmodels.AlarmaViewModel
 
 @Composable
-fun AlarmaScreen() {
-    // Layout principal
+fun AlarmaScreen(viewModel: AlarmaViewModel = hiltViewModel()) {
+
+    val alarmas = viewModel.alarmas.collectAsState(initial = emptyList())
+
+    var showDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { /* acción al presionar */ }) {
-                Icon(Icons.Filled.Add, contentDescription = "Agregar Alarma")
+            FloatingActionButton(onClick = { showDialog = true }) {
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Agregar Alarma")
             }
         }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Lista de alarmas
-            //LazyColumn, similar a un RecyclerView en Android clásico.
-            LazyColumn {
-                items<Any>(/* lista de alarmas */) { alarma ->
-                    // Elemento de la lista para cada alarma
-                }
+    ) { innerPadding ->
+        LazyColumn(contentPadding = innerPadding) {
+            items(alarmas.value) { alarma ->
+                AlarmaCard(alarma = alarma, onAlarmaChanged = { viewModel.actualizarAlarma(it) })
             }
+        }
+        if (showDialog) {
+            AddAlarmaDialog(
+                onDismiss = { showDialog = false },
+                onConfirm = { alarmaData ->
+                    // Aquí manejas la confirmación del diálogo, por ejemplo, agregando la alarma
+                //    viewModel.addAlarma(alarmaData)
+                    showDialog = false
+                }
+            )
         }
     }
-}
-
-fun <LazyItemScope> items(itemContent: LazyItemScope.(index: Int) -> Unit) {
-
 }
