@@ -6,7 +6,12 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".MyAppCrud"
@@ -31,7 +36,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".screens.alarmascreens.components.AlarmaReceiver"/>
+
+        <receiver android:name=".screens.alarmascreens.components.AlarmaReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.idh.alarmadespertador.ALARMA_ACTIVADA" />
+            </intent-filter>
+        </receiver>
+
+
+        <receiver android:name=".screens.alarmascreens.components.BootCompletedReceiver"
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

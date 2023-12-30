@@ -1,6 +1,7 @@
 package com.idh.alarmadespertador.screens.alarmascreens.components
 
 import android.app.TimePickerDialog
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,8 +20,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.idh.alarmadespertador.core.components.RingtonePickerDropdown
 import com.idh.alarmadespertador.domain.models.Alarma
+import com.idh.alarmadespertador.viewmodels.AlarmaViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -29,11 +33,13 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AddAlarmaDialog(onDismiss: () -> Unit, onConfirm: (Alarma) -> Unit) {
     //  val context = LocalContext.current
+    val alarmaViewModel: AlarmaViewModel = viewModel()
     var selectedTime by remember { mutableStateOf(LocalTime.now()) }
     var isVibrationEnabled by remember { mutableStateOf(false) }
     var selectedRingtoneUri by remember { mutableStateOf("") }
     var selectedRingtoneTitle by remember { mutableStateOf("") }
     var diasSeleccionados by remember { mutableStateOf(setOf<String>()) }
+    var label by remember { mutableStateOf("") }
 
     val diasDeLaSemana = listOf("L", "M", "X", "J", "V", "S", "D")
 
@@ -75,6 +81,12 @@ fun AddAlarmaDialog(onDismiss: () -> Unit, onConfirm: (Alarma) -> Unit) {
                         }
                     }
                 }
+                TextField(
+                    value = label,
+                    onValueChange = { label = it },
+                    label = { Text("Nombre de la Alarma") },
+                    singleLine = true
+                )
             }
         },
         confirmButton = {
@@ -89,8 +101,7 @@ fun AddAlarmaDialog(onDismiss: () -> Unit, onConfirm: (Alarma) -> Unit) {
                     val tiempoActivacion =
                         adjustedDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
-                    onConfirm(
-                        Alarma(
+                       val nuevaAlarma = Alarma(
                             id = 0,
                             tiempoActivacion,
                             dias = diasFinal,
@@ -98,9 +109,12 @@ fun AddAlarmaDialog(onDismiss: () -> Unit, onConfirm: (Alarma) -> Unit) {
                             vibrate = isVibrationEnabled,
                             soundTitle = selectedRingtoneTitle,
                             soundUri = selectedRingtoneUri,
-                            label = ""
+                            label = label
                         )
-                    )
+                    alarmaViewModel.crearAlarma(nuevaAlarma)
+                    Log.d("AddAlarmaDialog", "Título del tono seleccionado: $selectedRingtoneTitle")
+                    Log.d("AddAlarmaDialog", "URI del tono seleccionado: $selectedRingtoneUri")
+                    onDismiss()
                 }
             ) {
                 Text("Confirmar")

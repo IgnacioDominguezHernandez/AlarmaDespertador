@@ -2,6 +2,7 @@ package com.idh.alarmadespertador.viewmodels
 
 import android.Manifest
 import android.content.Context
+import android.icu.util.Calendar
 import android.location.Location
 import android.location.LocationManager
 import android.util.Log
@@ -16,6 +17,7 @@ import androidx.lifecycle.viewModelScope
 import com.idh.alarmadespertador.data.location.LocationListener
 import com.idh.alarmadespertador.data.network.WeatherAPI
 import com.idh.alarmadespertador.domain.location.LocationTracker
+import com.idh.alarmadespertador.domain.models.Alarma
 import com.idh.alarmadespertador.domain.models.clima.ClimaData
 import com.idh.alarmadespertador.domain.models.clima.OpenWeatherMap
 import com.idh.alarmadespertador.domain.repository.WeatherRepository

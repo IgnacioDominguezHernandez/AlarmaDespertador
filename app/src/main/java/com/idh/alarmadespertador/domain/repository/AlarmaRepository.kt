@@ -7,7 +7,6 @@ typealias Alarmas = List<Alarma>
 
 interface AlarmaRepository {
     fun getAlarmasFromRoom(): Flow<Alarmas>
-
     suspend fun addAlarmaToRoom(alarma: Alarma)
 
     suspend fun getAlarmaFromRoom(id: Int): Alarma

@@ -34,7 +34,8 @@ fun AlarmaScreen(viewModel: AlarmaViewModel = hiltViewModel()) {
     ) { innerPadding ->
         LazyColumn(contentPadding = innerPadding) {
             items(alarmas.value) { alarma ->
-                AlarmaCard(alarma = alarma, onAlarmaChanged = { viewModel.actualizarAlarma(it) })
+                AlarmaCard(alarma = alarma, onAlarmaChanged = { viewModel.actualizarAlarma(it) }
+                ,onDeleteAlarma = { viewModel.eliminarAlarma(alarma) })
             }
         }
         if (showDialog) {

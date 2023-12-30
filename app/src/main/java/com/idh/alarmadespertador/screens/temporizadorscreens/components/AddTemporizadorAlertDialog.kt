@@ -66,7 +66,7 @@ fun AddTemporizadorAlertDialog(
                     IconButton(onClick = {closeDialog() } ) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
                     }
-                    Text("Agregar Alarma", style = MaterialTheme.typography.titleLarge)
+                    Text("Agregar Temporizador", style = MaterialTheme.typography.titleLarge)
                 }
             },
             text = {
