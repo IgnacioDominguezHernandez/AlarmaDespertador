@@ -6,6 +6,7 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ALARMA_TABLE
 
+//// Modelo de datos que representa la entidad para una base de datos Room
 @Entity(tableName = ALARMA_TABLE)
 data class Alarma(
     @PrimaryKey(autoGenerate = true)

@@ -9,8 +9,9 @@ y la lógica de la aplicación (ViewModels). Permite a los ViewModel solicitar y
 datos sin preocuparse por los detalles de implementación de cómo se almacenan o recuperan esos datos */
 
 typealias Temporizadores = List<Temporizador>
+
 interface TemporizadorRepository {
-    fun getTemporizadorFromRoom() : Flow<Temporizadores>
+    fun getTemporizadorFromRoom(): Flow<Temporizadores>
 
     fun addTemporizadorToRoom(temporizador: Temporizador)
 

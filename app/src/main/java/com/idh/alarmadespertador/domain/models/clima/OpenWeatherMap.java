@@ -2,6 +2,7 @@
 package com.idh.alarmadespertador.domain.models.clima;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.idh.alarmadespertador.domain.models.clima.Sys;
@@ -9,6 +10,9 @@ import com.idh.alarmadespertador.domain.models.clima.Weather;
 
 public class OpenWeatherMap {
 
+    //// Cada campo corresponde a una parte específica de la respuesta JSON.
+    // Todas las clases de esta carpeta son para lo mismo.
+    // Con Getters y setters para cada campo.
     @SerializedName("coord")
     @Expose
     private Coord coord;

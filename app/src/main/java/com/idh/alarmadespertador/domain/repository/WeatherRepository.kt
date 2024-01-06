@@ -1,14 +1,14 @@
 package com.idh.alarmadespertador.domain.repository
 
-import android.util.Log
 import com.idh.alarmadespertador.domain.models.clima.OpenWeatherMap
 import com.idh.alarmadespertador.domain.util.Resource
-import retrofit2.Response
 
+//define los métodos para obtener datos del clima:
 interface WeatherRepository {
 
-        suspend fun getWeatherWithLocation(lat: Double, lon: Double): Resource<OpenWeatherMap>
+    //// Obtiene el clima para una ubicación específica dadas las coordenadas latitud y longitud.
+    suspend fun getWeatherWithLocation(lat: Double, lon: Double): Resource<OpenWeatherMap>
 
-                // Resto de la implementación...
-        suspend fun getWeatherWithCityName(name: String): Resource<OpenWeatherMap>
+    // Obtiene el clima para una ciudad específica por nombre.
+    suspend fun getWeatherWithCityName(name: String): Resource<OpenWeatherMap>
 }

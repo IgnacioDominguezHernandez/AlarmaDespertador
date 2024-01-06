@@ -9,33 +9,30 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ALARMA_SCREEN
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.CLIMA_SCREEN
-import com.idh.alarmadespertador.core.constants.Constantes.Companion.RADIO_SCREEN
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_SCREEN
-import com.idh.alarmadespertador.screens.ConfigurarApariencia
-import com.idh.alarmadespertador.screens.ConfigurarFormato
+import com.idh.alarmadespertador.screens.topupscreens.ConfigurarApariencia
+import com.idh.alarmadespertador.screens.topupscreens.ConfigurarFormato
 import com.idh.alarmadespertador.screens.alarmascreens.AlarmaScreen
 import com.idh.alarmadespertador.screens.climascreens.ClimaScreen
-import com.idh.alarmadespertador.screens.radioscreens.RadioScreen
 import com.idh.alarmadespertador.screens.temporizadorscreens.TemporizadorScreen
 import com.idh.alarmadespertador.screens.temporizadorscreens.updatetemporizador.UpdateTemporizadorScreen
+import com.idh.alarmadespertador.screens.topupscreens.AcercaDe
 
-/* Cada llamada a Composable define una ruta y su pantalla asociada. Por ejemplo, composable(NavScreen.AlarmScreen.name)
+/* Cada llamada a Composable define una ruta y su pantalla asociada.
+    Por ejemplo, composable(NavScreen.AlarmScreen.name)
    { AlarmaScreen() } define la ruta para la pantalla de alarma.
     Estas rutas utilizan el enum NavScreen para nombrar cada ruta. */
 
 @Composable
-fun AppNavigation (
+fun AppNavigation(
     navController: NavHostController
 ) {
-    NavHost (
+    NavHost(
         navController = navController,
         startDestination = NavScreen.AlarmScreen.name
     ) {
         composable(NavScreen.AlarmScreen.name) {
             AlarmaScreen()
-        }
-        composable(NavScreen.RadioScreen.name) {
-            RadioScreen()
         }
         composable(NavScreen.TemporizadorScreen.name) {
             TemporizadorScreen(
@@ -62,6 +59,9 @@ fun AppNavigation (
         }
         composable(NavScreen.ConfigurarApariencia.name) {
             ConfigurarApariencia()
+        }
+        composable(NavScreen.AcercaDe.name) {
+            AcercaDe()
         }
         composable(NavScreen.ConfigurarFormato.name) {
             ConfigurarFormato()
@@ -92,7 +92,6 @@ fun getCurrentScreenTitle(navController: NavHostController): String {
 
     return when (currentDestination?.route) {
         NavScreen.AlarmScreen.name -> ALARMA_SCREEN
-        NavScreen.RadioScreen.name -> RADIO_SCREEN
         NavScreen.TemporizadorScreen.name -> TEMPORIZADOR_SCREEN
         NavScreen.ClimaScreen.name -> CLIMA_SCREEN
         // Añadir aquí más casos para otras pantallas

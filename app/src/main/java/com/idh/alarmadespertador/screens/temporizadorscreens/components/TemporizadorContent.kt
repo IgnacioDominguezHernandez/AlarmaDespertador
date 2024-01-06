@@ -18,7 +18,7 @@ import com.idh.alarmadespertador.viewmodels.TemporizadorViewModel
 @Composable
 fun TemporizadorContent(
     padding: PaddingValues, // padding del elemento padre
-    temporizadores: List<Temporizador>, // Asegúrate de que sea una lista
+    temporizadores: List<Temporizador>,
     deleteTemporizador: (temporizador: Temporizador) -> Unit,
     navigateToUpdateTemporizadorScreen: (temporizadorId: Int) -> Unit,
     onPlayPause: (Int ,EstadoReloj) -> Unit,

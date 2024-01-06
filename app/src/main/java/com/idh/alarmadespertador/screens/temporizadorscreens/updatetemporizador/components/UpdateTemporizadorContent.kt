@@ -60,7 +60,8 @@ fun PreviewUpdateTemporizadorContent() {
 }
 
  */
-
+// Actualiza los temporizadores, pasa los datos actuales y los actualiza en la BD
+// a travea del viewModel
 @Composable
 fun UpdateTemporizadorContent(
     padding: PaddingValues,

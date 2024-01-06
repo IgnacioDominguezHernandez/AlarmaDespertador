@@ -18,8 +18,11 @@ import kotlin.coroutines.resume
 class DefaultLocationTracker @Inject constructor(
     private val locationClient: FusedLocationProviderClient,
     private val application: Application
-): LocationTracker {
+) : LocationTracker {
 
+    //Clase responsable de obtener la ubicación actual del dispositivo.
+    // Esta clase implementa la interfaz LocationTracker y utiliza
+    // FusedLocationProviderClient para acceder a los servicios de ubicación
     override suspend fun getCurrentLocation(): Location? {
         val hasAccessFineLocationPermission = ContextCompat.checkSelfPermission(
             application,
@@ -29,18 +32,20 @@ class DefaultLocationTracker @Inject constructor(
             application,
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-
-        val locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        //// Comprueba si los servicios de ubicación (GPS y/o red) están habilitados en el dispositivo.
+        val locationManager =
+            application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if(!hasAccessCoarseLocationPermission || !hasAccessFineLocationPermission || !isGpsEnabled) {
+        /// Si faltan permisos o los servicios de ubicación no están habilitados, retorna null.
+        if (!hasAccessCoarseLocationPermission || !hasAccessFineLocationPermission || !isGpsEnabled) {
             return null
         }
-
+        //// Utiliza una corrutina para esperar de manera asincrónica la obtención de la última ubicación conocida.
         return suspendCancellableCoroutine { cont ->
             locationClient.lastLocation.apply {
-                if(isComplete) {
-                    if(isSuccessful) {
+                if (isComplete) {
+                    if (isSuccessful) {
                         cont.resume(result)
                     } else {
                         cont.resume(null)

@@ -9,6 +9,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import com.idh.alarmadespertador.domain.models.EstadoReloj
 
+//Iconos de Play y pause de los temporizadores del Card
 @Composable
 fun PlayPauseIcons(
     temporizadorId: Int,

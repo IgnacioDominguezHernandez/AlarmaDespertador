@@ -2,9 +2,12 @@ package com.idh.alarmadespertador.core.constants
 
 
 class Constantes {
+    companion object {
 
+        // Valores constantes que se utilizan en toda la aplicación.
+        // Se utiliza el patrón companion object para hacer que estas constantes
+        // sean estáticas y accesibles globalmente sin necesidad de instanciar la clase
 
-    companion object{
         //Room
         const val TEMPORIZADOR_TABLE = "temporizador_table"
         const val ALARMA_TABLE = "alarma_table"
@@ -19,7 +22,7 @@ class Constantes {
         const val CONFIGURAR_FORMATO = "Configurar Formato"
 
         //Arguments
-        const val  TEMPORIZADOR_ID = "temporizadorId"
+        const val TEMPORIZADOR_ID = "temporizadorId"
 
         //Actions
         const val ADD_TEMPORIZADOR = "Agregar temporizador"
@@ -27,7 +30,7 @@ class Constantes {
 
         //Buttons
         const val ADD = "Agregar"
-        const val DISMISS ="Cancelar"
+        const val DISMISS = "Cancelar"
         const val UPDATE = "Modificar"
 
         // Placeholders
@@ -35,6 +38,6 @@ class Constantes {
         const val HORAS = "Horas..."
         const val MINUTOS = "Minutos..."
         const val SEGUNDOS = "Segundos..."
-        const val  NO_VALUE = ""
+        const val NO_VALUE = ""
     }
 }

@@ -3,9 +3,9 @@ package com.idh.alarmadespertador.navigation
 enum class NavScreen {
 
     AlarmScreen,
-    RadioScreen,
     TemporizadorScreen,
     ClimaScreen,
+    AcercaDe,
     ConfigurarApariencia,
     ConfigurarFormato
 

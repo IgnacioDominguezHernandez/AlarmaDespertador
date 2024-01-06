@@ -18,15 +18,15 @@ object LocationListener : android.location.LocationListener {
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-        // Implementar lógica para el cambio de estado
+
     }
 
     override fun onProviderEnabled(provider: String) {
-        // Implementar lógica cuando el proveedor está habilitado
+
     }
 
     override fun onProviderDisabled(provider: String) {
-        // Implementar lógica cuando el proveedor está deshabilitado
+
     }
 
 }

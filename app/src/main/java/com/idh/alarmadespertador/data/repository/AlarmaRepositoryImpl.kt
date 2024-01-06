@@ -26,5 +26,6 @@ class AlarmaRepositoryImpl(
     override suspend fun deleteAlarmaFromRoom(alarma: Alarma) = alarmaDao.deleteAlarma(alarma)
 
     // Actualiza una lista de alarmas.
-    override suspend fun updateAlarmasInRoom(alarmas: List<Alarma>) = alarmaDao.updateAlarmas(alarmas)
+    override suspend fun updateAlarmasInRoom(alarmas: List<Alarma>) =
+        alarmaDao.updateAlarmas(alarmas)
 }

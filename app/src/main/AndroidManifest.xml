@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -29,7 +31,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Alarmadespertador">
+            android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,8 +43,15 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.idh.alarmadespertador.ALARMA_ACTIVADA" />
+                <action android:name="DETENER_ALARMA" />
+                <action android:name="POSTPONER_ALARMA" />
             </intent-filter>
         </receiver>
+
+        <service android:name=".screens.alarmascreens.components.AlarmaService"
+            android:exported="false" />
+
+        <activity android:name=".screens.alarmascreens.components.AlarmaActivadaActivity" />
 
 
         <receiver android:name=".screens.alarmascreens.components.BootCompletedReceiver"
@@ -51,6 +60,18 @@
             <action android:name="android.intent.action.BOOT_COMPLETED"/>
         </intent-filter>
         </receiver>
+
+        <receiver android:name=".MyWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/miwidget" />
+        </receiver>
+
     </application>
 
 </manifest>

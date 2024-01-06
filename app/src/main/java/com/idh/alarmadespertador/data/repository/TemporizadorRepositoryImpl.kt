@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 entre la capa de datos (DAOs y Room Database) y la capa de lógica de negocio (ViewModels, Use Cases, etc.) de
  la aplicación. Aquí se realizan las operaciones de base de datos relacionadas con los Temporizadores. */
 
-class TemporizadorRepositoryImpl (
+class TemporizadorRepositoryImpl(
     private val temporizadorDao: TemporizadorDao
-): TemporizadorRepository {
+) : TemporizadorRepository {
 
     /* Retorna un Flow de una lista de Temporizadores. Esta función utiliza temporizadorDao.getTemporizador(),
     que es una consulta a la base de datos (como todos los métodos) para obtener todos los temporizadores.
@@ -19,7 +19,8 @@ class TemporizadorRepositoryImpl (
     override fun getTemporizadorFromRoom() = temporizadorDao.getTemporizador()
 
     //Aquí un temporizador específico
-    override fun getTemporizadorFromRoom(id: Int): Temporizador = temporizadorDao.getTemporizador(id)
+    override fun getTemporizadorFromRoom(id: Int): Temporizador =
+        temporizadorDao.getTemporizador(id)
 
     //Añade un nuevo temporizador
     override fun addTemporizadorToRoom(temporizador: Temporizador) =

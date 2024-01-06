@@ -10,7 +10,7 @@ manejo de bases de datos. Esta clase representa la base de datos para la aplicac
 entidades y versiones de la misma. */
 //Las clases abstractas en Java y Kotlin se utilizan para definir un "contrato" o estructura
 // que las clases hijas deben seguir, sin proporcionar una implementación complet
-@Database(entities = [Temporizador::class, Alarma::class], version = 3, exportSchema = false)
+@Database(entities = [Temporizador::class, Alarma::class], version = 4, exportSchema = false)
 abstract class AplicacionDB : RoomDatabase() {
     abstract fun temporizadorDao(): TemporizadorDao
     abstract fun alarmaDao(): AlarmaDao

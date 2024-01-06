@@ -1,6 +1,7 @@
 package com.idh.alarmadespertador.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_TABLE
 import com.idh.alarmadespertador.data.network.AlarmaDao
@@ -15,14 +16,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-
+import javax.inject.Singleton
 
 // Módulo de Dagger Hilt, utilizado para proveer dependencias a través de la inyección de dependencias.
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
-    /* función provee una instancia de la base de datos Room (TemporizadorDB). Utiliza el constructor
+    /* función que provee una instancia de la base de datos Room (TemporizadorDB). Utiliza el constructor
     de la base de datos Room.databaseBuilder para crear la base de datos, pasándole el contexto de la aplicación,
     la clase de la base de datos (TemporizadorDB::class.java), y el nombre de la base de datos (en este caso,
     el nombre de la tabla TEMPORIZADOR_TABLE */
@@ -70,6 +71,19 @@ Recibe como parámetro una instancia de AplicacionDB y llama a alarmaDao() para 
     @Provides
     fun provideAlarmaRepository(alarmaDao: AlarmaDao): AlarmaRepository {
         return AlarmaRepositoryImpl(alarmaDao)
+    }
+
+    //Este método se usa para proporcionar una instancia de SharedPreferences a toda la aplicación
+    // (@Singleton), lo que significa que se crea una sola instancia de SharedPreferences y se
+    // reutiliza durante todo el ciclo de vida de la aplicación.
+    // Con Dagger-Hilt se proporciona automáticamente la instancia de SharedPreferences
+    // cuando sea necesaria en cualquier parte de la aplicación.
+    // Esto se hace inyectando SharedPreferences.
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(@ApplicationContext appContext: Context): SharedPreferences {
+        return appContext.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
     }
 
 }

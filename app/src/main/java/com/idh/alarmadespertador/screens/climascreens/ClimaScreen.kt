@@ -3,7 +3,6 @@ package com.idh.alarmadespertador.screens.climascreens
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,94 +30,128 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import com.idh.alarmadespertador.domain.models.clima.ClimaData
+import com.idh.alarmadespertador.ui.theme.WeatherColorsTheme
+import com.idh.alarmadespertador.ui.theme.md_theme_light_onPrimary
 import com.idh.alarmadespertador.viewmodels.ClimaViewModel
+import kotlin.math.roundToInt
+
 @Composable
 fun ClimaScreen(climaViewModel: ClimaViewModel = hiltViewModel()) {
-    // Estado para gestionar el texto de la barra de búsqueda
 
-    var searchText by remember { mutableStateOf("") }
+    //Vista de Clima
+    //Se comprueban los permisos del device 
 
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
-        onResult = { permissions ->
-            if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
-                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
-                // Permiso concedido, puedes cargar la información del clima
-                climaViewModel.loadWeatherInfo()
-            } else {
-                // Manejar el caso de permiso no concedido
-                // Mostrar algún mensaje o interfaz de usuario alternativa
+  //  WeatherColorsTheme() {
+
+        // Estado para gestionar el texto de la barra de búsqueda
+        var searchText by remember { mutableStateOf("") }
+        var mostrarMensajeErrorPermiso by remember { mutableStateOf(false) }
+
+        val locationPermissionLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions(),
+            onResult = { permissions ->
+                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+                ) {
+                    // Permiso concedido, puedes cargar la información del clima
+                    mostrarMensajeErrorPermiso = false
+                    climaViewModel.loadWeatherInfo()
+                } else {
+                    // Manejar el caso de permiso no concedido
+                    mostrarMensajeErrorPermiso = true
+                }
             }
-        }
-    )
-
-    LaunchedEffect(Unit) {
-        locationPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
         )
-    }
 
-    /*
-    LaunchedEffect(Unit) {
-        climaViewModel.loadWeatherInfo()
-    }
-
-     */
-
-    val state = climaViewModel.state
-
-    when {
-        state.isLoading -> {
-            Text(text = "cargando")
-            CircularProgressIndicator()
+        if (mostrarMensajeErrorPermiso) {
+            Text(
+                text = "Se requieren permisos de ubicación para mostrar la información del clima.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(16.dp),
+                textAlign = TextAlign.Center
+            )
+            // Aquí se puede agregar un botón para solicitar nuevamente los permisos.
         }
+
+        LaunchedEffect(Unit) {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+
+        val state = climaViewModel.state
+        // Dependiendo del momento se muestra una cosa u otra al usuario
+        when {
+            state.isLoading -> {
+                Box(
+                    contentAlignment = Alignment.Center, // Centra el contenido dentro del Box
+                    modifier = Modifier.fillMaxSize()    // El Box ocupa todo el espacio disponible
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(100.dp)
+                    )
+                    Text(
+                        text = "Cargando...",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(top = 120.dp)
+                    )
+                }
+            }
 
             state.error != null -> {
 
-                Text(
-                    text = "error",
-                    color = Color.Red,
-                    textAlign = TextAlign.Center,
-                )
+                Box(
+                    contentAlignment = Alignment.Center, // Centra el contenido dentro del Box
+                    modifier = Modifier.fillMaxSize()    // El Box ocupa todo el espacio disponible
+                ) {
+                    Text(
+                        text = "Error al cargar los datos",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium, // Usa una tipografía de Material 3
+                        textAlign = TextAlign.Center, // Asegura que el texto esté centrado dentro del Text
+                        modifier = Modifier.padding(16.dp) // Añade un poco de padding para evitar que el texto toque los bordes
+                    )
+                }
 
             }
 
-        state.climaData != null ->     Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color(0xFF1E90FF)
-        ) {
-
-            LazyColumn(
-                horizontalAlignment = Alignment.CenterHorizontally
+            state.climaData != null -> Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
             ) {
-                item {
-                    Spacer(modifier = Modifier.height(66.dp))
-                    // Divider()
-                    // Llamada al composable SearchBar
-                    SearchBar(
-                        searchText = searchText,
-                        onSearchTextChanged = { newText -> searchText = newText },
-                        climaViewModel = climaViewModel
-                    )
-                }
-                item {
-                    // Espacio entre la barra de búsqueda y la tarjeta del clima
-                    Spacer(modifier = Modifier.height(46.dp))
-                    // Resto de tu UI
-                    WeatherCard(weatherData = state.climaData)
-                    // ... puedes agregar más contenido aquí si es necesario
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.height(46.dp))
+                        // Divider()
+                        // Llamada al composable SearchBar
+                        SearchBar(
+                            searchText = searchText,
+                            onSearchTextChanged = { newText -> searchText = newText },
+                            climaViewModel = climaViewModel
+                        )
+                    }
+                    item {
+                        // Espacio entre la barra de búsqueda y la tarjeta del clima
+                        Spacer(modifier = Modifier.height(40.dp))
+                        WeatherCard(weatherData = state.climaData)
+                    }
                 }
             }
         }
-    }
+//    }
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchBar(
     searchText: String,
@@ -131,15 +164,30 @@ fun SearchBar(
         value = searchText,
         onValueChange = onSearchTextChanged,
         singleLine = true,
-        placeholder = { Text("Introduzca una ciudad") },
-        shape = RoundedCornerShape(50.dp),
-        colors = OutlinedTextFieldDefaults.colors(),
+        placeholder = {
+            Text(
+                "Introduzca una ciudad",
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
+        shape = RoundedCornerShape(40.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            MaterialTheme.colorScheme.onSurface,
+            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+            focusedTrailingIconColor = MaterialTheme.colorScheme.primary,
+            focusedLeadingIconColor = MaterialTheme.colorScheme.primary
+        ),
         trailingIcon = {
             IconButton(onClick = {
                 climaViewModel.loadWeatherDataByCityName(searchText) // Llama a la función del ViewModel
                 keyboardController?.hide() // Oculta el teclado
             }) {
-                Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+                Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search")
             }
         },
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -151,7 +199,9 @@ fun SearchBar(
                 keyboardController?.hide() // Oculta el teclado
             }
         ),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
     )
 }
 
@@ -161,8 +211,8 @@ fun WeatherCard(weatherData: ClimaData) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-     //   color = Color(0xFF1E90FF),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -173,30 +223,44 @@ fun WeatherCard(weatherData: ClimaData) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = rememberImagePainter(weatherData.icono),
+                AsyncImage(
+                    model = weatherData.icono, // URL completa del icono
                     contentDescription = "Weather Icon",
-                    modifier = Modifier.size(48.dp)  // Tamaño del icono
+                    modifier = Modifier.size(48.dp) // Tamaño del icono
                 )
                 Text(
-                    text = "${weatherData.temperatura}°C",
-                    style = MaterialTheme.typography.displayMedium
+                    text = "${weatherData.temperatura.roundToInt()}°C",
+                    style = MaterialTheme.typography.displayMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            Text(weatherData.descripcion, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                weatherData.descripcion,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(12.dp))
             Divider()
-            Spacer(modifier = Modifier.height(16.dp))
-            WeatherDetail("Amanecer", weatherData.amanecer)
-            WeatherDetail("Atardecer", weatherData.atardecer)
-            WeatherDetail("Sensación térmica", "${weatherData.seSiente}°C")
-            WeatherDetail("Max. Temp.", "${weatherData.maxTemp}°C")
-            WeatherDetail("Min. Temp.", "${weatherData.minTemp}°C")
-            WeatherDetail("Precipitaciones", weatherData.humedad)
-            WeatherDetail("Presión", weatherData.presion)
-            // Asumiendo que tienes un campo para el viento en ClimaData
-            // WeatherDetail("Viento", "${weatherData.viento} m/s")
+            Spacer(modifier = Modifier.height(12.dp))
+            // Detalles del clima
+            weatherDetails(weatherData)
         }
+    }
+}
+
+@Composable
+fun weatherDetails(weatherData: ClimaData) {
+    val details = listOf(
+        "Amanecer" to weatherData.amanecer,
+        "Atardecer" to weatherData.atardecer,
+        "Sensación térmica" to "${weatherData.seSiente.roundToInt()}°C",
+        "Max. Temp." to "${weatherData.maxTemp.roundToInt()}°C",
+        "Min. Temp." to "${weatherData.minTemp.roundToInt()}°C",
+        "Precipitaciones" to weatherData.humedad,
+        "Presión" to weatherData.presion
+    )
+    details.forEach { (label, value) ->
+        WeatherDetail(label, value)
     }
 }
 
@@ -208,8 +272,16 @@ fun WeatherDetail(label: String, value: String) {
             .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(label, style = MaterialTheme.typography.bodyLarge)
-        Text(value, style = MaterialTheme.typography.bodyLarge)
+        Text(
+            label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 

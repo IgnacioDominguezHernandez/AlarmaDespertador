@@ -3,13 +3,14 @@ package com.idh.alarmadespertador.domain.models
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material.icons.outlined.Radio
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.WatchLater
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.idh.alarmadespertador.navigation.NavScreen
 
 //Es una clase sellada
-sealed class ItemsBottomNav (
+sealed class ItemsBottomNav(
     //Propiedades de la clase
     val icon: ImageVector,
     var title: String,
@@ -17,22 +18,19 @@ sealed class ItemsBottomNav (
 ) {
     //cada subtipo de ItemsBottomNav representa un ítem específico en la barra de navegación inferior de la aplicación
     //Son cuatro objetos singleton y se mostrarán en la parte inferior de la barra de navegación
-    object Itembottomnav1: ItemsBottomNav(
+    object Itembottomnav1 : ItemsBottomNav(
         Icons.Outlined.Alarm,
         "Alarma",
         NavScreen.AlarmScreen.name
     )
-    object Itembottomnav2: ItemsBottomNav(
-        Icons.Outlined.Radio,
-        "Radio",
-        NavScreen.RadioScreen.name
-    )
-    object Itembottomnav3: ItemsBottomNav(
-        Icons.Outlined.WatchLater,
+
+    object Itembottomnav3 : ItemsBottomNav(
+        Icons.Outlined.Timer,
         "Temporizador",
         NavScreen.TemporizadorScreen.name
     )
-    object Itembottomnav4: ItemsBottomNav(
+
+    object Itembottomnav4 : ItemsBottomNav(
         Icons.Outlined.WbSunny,
         "Clima",
         NavScreen.ClimaScreen.name

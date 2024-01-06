@@ -13,6 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.idh.alarmadespertador.screens.temporizadorscreens.updatetemporizador.components.UpdateTemporizadorContent
 import com.idh.alarmadespertador.viewmodels.TemporizadorViewModel
 
+//Vista de update temporizador
 @Composable
 fun UpdateTemporizadorScreen(
     viewModel: TemporizadorViewModel = hiltViewModel(),

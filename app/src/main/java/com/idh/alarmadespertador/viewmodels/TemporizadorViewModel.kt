@@ -52,9 +52,11 @@ class TemporizadorViewModel @Inject constructor(
     fun closeDialog() {
         openDialog = false
     }
+
     fun openDialog() {
         openDialog = true
     }
+
     //Para realizar operaciones asíncronas
     /* Funciones que interactúan con la base de datos para agregar, eliminar o actualizar un temporizador.
     Se ejecutan en un hilo secundario (Dispatchers.IO). */
@@ -63,31 +65,42 @@ class TemporizadorViewModel @Inject constructor(
         repo.addTemporizadorToRoom(temporizador)
     }
 
+    //Se encarga de eliminar un temporizador específico de la base de datos.
+    //viewModelScope.launch(Dispatchers.IO)) para realizar la operación en un hilo separado (IO),
+    // evitando así bloquear el hilo principal de la UI. Llama al método deleteTemporizadorFromRoom
+    // del repositorio pasándole el temporizador a eliminar.
     fun deleteTemporizador(temporizador: Temporizador) =
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteTemporizadorFromRoom(temporizador)
         }
-
+    //Actualiza la cantidad de milisegundos en el estado actual del temporizador.
     fun updateMilisegundos(milisegundos: Int) {
         temporizador = temporizador.copy(
             milisegundos = milisegundos
         )
     }
-
+    //Actualiza un temporizador específico en la base de datos.
     fun updateTemporizador(temporizador: Temporizador) =
         viewModelScope.launch(Dispatchers.IO) {
             repo.updateTemporizadorInRoom(temporizador)
         }
 
+    // invoca getTemporizadorFromRoom del repositorio (repo), pasándole el id del temporizador que se desea cargar.
+    //Una vez que el temporizador se carga desde la base de datos, actualiza la
+    // propiedad temporizador del ViewModel con el temporizador cargado.
+    //Registra un mensaje en el log con los detalles del temporizador cargado, incluyendo su ID y nombre.
     fun getTemporizador(id: Int) = viewModelScope.launch(
         Dispatchers.IO
     )
     {
         val loadedTemporizador = repo.getTemporizadorFromRoom(id)
         temporizador = loadedTemporizador
-        Log.d("TemporizadorViewModel", "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}")
+        Log.d(
+            "TemporizadorViewModel",
+            "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}"
+        )
     }
-
+    // Se utiliza para inicializar los estados de los temporizadores en la aplicación.
     init {
         inicializarEstadosTemporizadores()
     }
@@ -95,13 +108,21 @@ class TemporizadorViewModel @Inject constructor(
     //Mantiene el estado (como activo, pausado, completado) de cada temporizador.
 
     // Inicializa los estados de los temporizadores cargándolos de la base de datos
+    //Obtiene una lista de todos los temporizadores almacenados en la base de datos llamando a
+    // getTemporizadorFromRoom().first() del repositorio. Esta llamada
+    // bloqueante espera hasta que se obtengan todos los temporizadores antes de continuar.
+    //Si el estado del temporizador es EstadoReloj.ACTIVO, inicia el
+    // temporizador llamando a startTimer con el ID del temporizador.
     private fun inicializarEstadosTemporizadores() {
         viewModelScope.launch(Dispatchers.IO) {
             val listaTemporizadores = repo.getTemporizadorFromRoom().first()
             listaTemporizadores.forEach { temporizador ->
                 _temporizadorState.value = _temporizadorState.value.toMutableMap().apply {
                     put(temporizador.id, temporizador)
-                    Log.d("TemporizadorViewModelINICIO", "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}")
+                    Log.d(
+                        "TemporizadorViewModelINICIO",
+                        "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}"
+                    )
                 }
                 if (temporizador.estadoTemp == EstadoReloj.ACTIVO) {
                     startTimer(temporizador.id)
@@ -109,6 +130,9 @@ class TemporizadorViewModel @Inject constructor(
             }
         }
     }
+
+    //Responsable de actualizar el estado de un temporizador específico en la memoria y, si es necesario, iniciar su temporizador
+    //Llama a updateTemporizadorState con el temporizador actualizado para modificar el estado global del temporizador en la aplicación.
     fun cambiarEstadoTemporizadorEnMemoria(temporizadorId: Int, nuevoEstado: EstadoReloj) {
         _temporizadorState.value[temporizadorId]?.let { temporizadorActual ->
             val temporizadorActualizado = temporizadorActual.copy(estadoTemp = nuevoEstado)
@@ -132,13 +156,19 @@ class TemporizadorViewModel @Inject constructor(
     fun startTimer(temporizadorId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val temporizador = _temporizadorState.value[temporizadorId] ?: return@launch
-            Log.d("TemporizadorViewModelSTARTTIMER", "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}")
+            Log.d(
+                "TemporizadorViewModelSTARTTIMER",
+                "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}"
+            )
             while (temporizador.milisegundos > 0 && temporizador.estadoTemp == EstadoReloj.ACTIVO) {
                 delay(1000)
                 withContext(Dispatchers.Main) {
                     temporizador.milisegundos -= 1000
                     updateTemporizadorState(temporizador)
-                    Log.d("ViewModelDentroDelWHILE", "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}")
+                    Log.d(
+                        "ViewModelDentroDelWHILE",
+                        "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}"
+                    )
                 }
                 if (temporizador.milisegundos <= 0) {
                     temporizador.estadoTemp = EstadoReloj.COMPLETADO
@@ -148,10 +178,18 @@ class TemporizadorViewModel @Inject constructor(
             }
         }
     }
+
+    //actualiza el estado de un temporizador específico dentro de un estado gestionado por MutableState
+    //Convierte el valor actual del estado _temporizadorState a un MutableMap para permitir modificaciones.
+    //Al convertir el estado a un MutableMap, la función puede modificar eficientemente el estado sin
+    // necesidad de crear una nueva instancia completa del mapa cada vez.
     private fun updateTemporizadorState(temporizador: Temporizador) {
         _temporizadorState.value = _temporizadorState.value.toMutableMap().apply {
             put(temporizador.id, temporizador)
-            Log.d("ViewModelUPDATESTATE", "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}")
+            Log.d(
+                "ViewModelUPDATESTATE",
+                "Cargando temporizador: ID = ${temporizador.id}, Nombre = ${temporizador.nombreTemporizador}"
+            )
         }
     }
 

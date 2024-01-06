@@ -31,6 +31,9 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+
+//ViewModel del clima. Utiliza Hilt para inyectar dependencias del WeatherRepository y LocationTracker.
+// Estas dependencias se utilizan para obtener datos meteorológicos y rastrear la ubicación actual del dispositivo.
 @HiltViewModel
 class ClimaViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
@@ -40,13 +43,25 @@ class ClimaViewModel @Inject constructor(
     var state by mutableStateOf(WeatherState())
         private set
 
+    // Esta función inicia el proceso de obtener la información del clima. Se ejecuta en el
+    // viewModelScope para asegurar que las operaciones se cancelen si el ViewModel se desecha.
+    //Utiliza LocationTracker para obtener la ubicación actual del dispositivo. Si la ubicación está
+    // disponible, procede a solicitar datos del clima
+    //Llama a weatherRepository.getWeatherWithLocation pasando la latitud y longitud de la ubicación actual.
+    // Se utiliza un when para manejar los casos de éxito y error en la respuesta
     fun loadWeatherInfo() {
         viewModelScope.launch {
             Log.d("ClimaViewModel", "Iniciando la carga de datos del clima...")
             state = state.copy(isLoading = true, error = null)
             locationTracker.getCurrentLocation()?.let { location ->
-                Log.d("ClimaViewModel", "Ubicación obtenida: Lat ${location.latitude}, Lon ${location.longitude}")
-                when (val result = weatherRepository.getWeatherWithLocation(location.latitude, location.longitude)) {
+                Log.d(
+                    "ClimaViewModel",
+                    "Ubicación obtenida: Lat ${location.latitude}, Lon ${location.longitude}"
+                )
+                when (val result = weatherRepository.getWeatherWithLocation(
+                    location.latitude,
+                    location.longitude
+                )) {
                     is Resource.Success -> {
 
                         val ciudad = result.data?.sys?.country
@@ -69,8 +84,12 @@ class ClimaViewModel @Inject constructor(
                             error = null
                         )
                     }
+
                     is Resource.Error -> {
-                        Log.e("ClimaViewModel", "Error al cargar datos del clima: ${result.message}")
+                        Log.e(
+                            "ClimaViewModel",
+                            "Error al cargar datos del clima: ${result.message}"
+                        )
                         state = state.copy(
                             weatherInfo = null,
                             isLoading = false,
@@ -88,6 +107,13 @@ class ClimaViewModel @Inject constructor(
         }
     }
 
+    //La función loadWeatherDataByCityName en la clase ClimaViewModel se encarga de cargar y
+    //gestionar los datos del clima para una ciudad específica, basándose en su nombre
+    //Inicio de la Carga de Datos: Al invocar esta función, se inicia una operación asíncrona dentro del viewModelScope.
+    // Se registra un mensaje indicando que se está cargando el clima para la ciudad especificada.
+    //WeatherRepository.getWeatherWithCityName, pasando el nombre de la ciudad, para solicitar los
+    // datos del clima. La función when maneja los dos posibles resultados de esta solicitud:
+    // éxito (Resource.Success) o error (Resource.Error).
     fun loadWeatherDataByCityName(cityName: String) {
         viewModelScope.launch {
             Log.d("ClimaViewModel", "Cargando datos del clima para la ciudad: $cityName")
@@ -102,6 +128,7 @@ class ClimaViewModel @Inject constructor(
                         error = null
                     )
                 }
+
                 is Resource.Error -> {
                     Log.e("ClimaViewModel", "Error al cargar datos del clima: ${result.message}")
                     state = state.copy(
@@ -114,7 +141,14 @@ class ClimaViewModel @Inject constructor(
         }
     }
 
-
+    //La función transformToClimaData en la clase ClimaViewModel es responsable de transformar los datos del
+    // clima obtenidos de la API OpenWeatherMap en un objeto ClimaData. Es más fácil de manejar en la interfaz
+    // de usuario de la aplicación.
+    //Recibe un objeto weatherData del tipo OpenWeatherMap, que contiene los datos del
+    // clima en bruto como resultado de una consulta a la API.
+    //Crea y devuelve un objeto ClimaData, que es una representación más amigable y adaptada de los datos del clima
+    // Devuelve un objeto ClimaData con todos los datos del clima convenientemente
+    // formateados y listos para ser utilizados en la UI.
     private fun transformToClimaData(weatherData: OpenWeatherMap): ClimaData {
         return ClimaData(
             ciudad = weatherData.name,
@@ -131,6 +165,10 @@ class ClimaViewModel @Inject constructor(
         )
     }
 
+    // a función formatTime es utilizada para convertir un tiempo expresado en segundos desde la época Unix
+    // (1 de enero de 1970 a las 00:00:00 UTC) en una cadena de texto que representa la hora en formato HH:mm (horas y minutos).
+    // Utiliza Instant.ofEpochSecond para convertir timeInSeconds a un objeto Instant.
+    // Este objeto representa un punto específico en el tiempo.
     private fun formatTime(timeInSeconds: Int): String {
         val instant = Instant.ofEpochSecond(timeInSeconds.toLong())
         Log.d("Debug", "Instant: $instant")
@@ -138,6 +176,7 @@ class ClimaViewModel @Inject constructor(
         return formatter.format(instant)
     }
 
+    //La función getIconUrl se utiliza para generar una URL completa para obtener el ícono del clima de OpenWeatherMap
     fun getIconUrl(iconCode: String): String {
         val baseUrl = "https://openweathermap.org/img/wn/"
         return "$baseUrl$iconCode@2x.png"

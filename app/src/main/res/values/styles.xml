@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Estilo para la pantalla de inicio -->
+    <style name="Theme.App.Starting" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/despertador_sol_android</item>
+    </style>
+
+    <!-- Estilo principal de la aplicación -->
+    <style name="Theme.MyApp" parent="Theme.AppCompat.Light.NoActionBar">
+
+    </style>
+</resources>
+
+

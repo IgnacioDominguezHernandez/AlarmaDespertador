@@ -5,9 +5,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
-fun currentRoute (navController: NavController): String? =
+fun currentRoute(navController: NavController): String? =
     navController.currentBackStackEntryAsState().value?.destination?.route
-
 
 /*navController.currentBackStackEntryAsState() es una llamada que obtiene
 la entrada actual (es decir, la pantalla o vista actual) en la pila de navegación como un estado observable

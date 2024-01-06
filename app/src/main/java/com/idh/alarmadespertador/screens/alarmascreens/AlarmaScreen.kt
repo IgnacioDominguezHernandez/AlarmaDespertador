@@ -1,11 +1,13 @@
 package com.idh.alarmadespertador.screens.alarmascreens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,6 +20,8 @@ import com.idh.alarmadespertador.screens.alarmascreens.components.AddAlarmaDialo
 import com.idh.alarmadespertador.screens.alarmascreens.components.AlarmaCard
 import com.idh.alarmadespertador.viewmodels.AlarmaViewModel
 
+// Vista de la pantalla de Alarma. Se pasan las alarmas de la BD a traves del ViewModel y hay
+// un floatbutton para añadir una nueva alarma
 @Composable
 fun AlarmaScreen(viewModel: AlarmaViewModel = hiltViewModel()) {
 
@@ -27,26 +31,33 @@ fun AlarmaScreen(viewModel: AlarmaViewModel = hiltViewModel()) {
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { showDialog = true }) {
+            FloatingActionButton(
+                onClick = { showDialog = true },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Agregar Alarma")
             }
         }
     ) { innerPadding ->
         LazyColumn(contentPadding = innerPadding) {
             items(alarmas.value) { alarma ->
-                AlarmaCard(alarma = alarma, onAlarmaChanged = { viewModel.actualizarAlarma(it) }
-                ,onDeleteAlarma = { viewModel.eliminarAlarma(alarma) })
+                AlarmaCard(
+                    alarma = alarma,
+                    onAlarmaChanged = { viewModel.actualizarAlarma(it) },
+                    onDeleteAlarma = { viewModel.eliminarAlarma(alarma) })
             }
         }
         if (showDialog) {
             AddAlarmaDialog(
                 onDismiss = { showDialog = false },
                 onConfirm = { alarmaData ->
-                    // Aquí manejas la confirmación del diálogo, por ejemplo, agregando la alarma
-                //    viewModel.addAlarma(alarmaData)
+                    //    viewModel.addAlarma(alarmaData)
                     showDialog = false
                 }
             )
         }
     }
 }
+
+

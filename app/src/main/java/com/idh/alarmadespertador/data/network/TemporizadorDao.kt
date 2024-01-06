@@ -1,4 +1,5 @@
 package com.idh.alarmadespertador.data.network
+
 import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
@@ -22,7 +23,7 @@ interface TemporizadorDao {
     //Devuelve un Flow<Temporizadores>, permitiendo una observación reactiva de los cambios en los datos
     //Selecciona todos los registros de la tabla TEMPORIZADOR_TABLE, ordenándolos por id en orden ascendente
     @Query("SELECT * FROM $TEMPORIZADOR_TABLE ORDER BY id ASC")
-    fun getTemporizador() : Flow<Temporizadores>
+    fun getTemporizador(): Flow<Temporizadores>
 
     //Agrega un nuevo Temporizador a la base de datos
     //temporizador es una instancia de Temporizador que se insertará
