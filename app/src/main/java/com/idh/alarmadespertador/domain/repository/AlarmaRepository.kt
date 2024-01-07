@@ -10,7 +10,7 @@ typealias Alarmas = List<Alarma>
 /// Devuelve un Flow de una lista de alarmas, permitiendo observar los cambios en tiempo real.
 interface AlarmaRepository {
     fun getAlarmasFromRoom(): Flow<Alarmas>
-    suspend fun addAlarmaToRoom(alarma: Alarma)
+    suspend fun addAlarmaToRoom(alarma: Alarma) : Long
 
     suspend fun getAlarmaFromRoom(id: Int): Alarma
 

@@ -1,10 +1,10 @@
 package com.idh.alarmadespertador.screens.alarmascreens.components
 
 import android.app.KeyguardManager
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,9 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_SNOOZE
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_STOP_ALARM
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDateTime
-import java.time.ZoneId
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,8 +35,18 @@ class AlarmaActivadaActivity : ComponentActivity() {
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
+    private var alarmaId: Int = -1
+    private var soundUri: String? = null
+    private var vibrate: Boolean = false
+    private var label: String = "Alarma"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Recuperar datos de la alarma del Intent
+        alarmaId = intent.getIntExtra("EXTRA_ID_ALARMA", -1)
+        soundUri = intent.getStringExtra("EXTRA_SOUND_URI")
+        vibrate = intent.getBooleanExtra("EXTRA_VIBRATE", false)
+        label = intent.getStringExtra("EXTRA_LABEL") ?: "Alarma"
 
         // Configurar la ventana para mostrar la actividad sobre la pantalla de bloqueo
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -51,48 +61,33 @@ class AlarmaActivadaActivity : ComponentActivity() {
         }
 
         setContent {
+            val snoozeTime = sharedPreferences.getInt("snoozeTime", 3) // Valor predeterminado de 5 minutos
             AlarmaActivadaScreen(
-                snoozeAlarm = { snoozeAlarm() },
+                snoozeAlarm = { snoozeAlarm(snoozeTime) },
                 stopAlarm = { stopAlarm() }
             )
         }
     }
-
-    private fun snoozeAlarm() {
-        // Obtener el tiempo de snooze de SharedPreferences
-        val snoozeTimeKey = "snoozeTime"
-        val snoozeMinutes = sharedPreferences.getInt(snoozeTimeKey, 5)
-
-// En AlarmaActivadaActivity, al configurar snooze
-        val newAlarmTime = LocalDateTime.now().plusMinutes(snoozeMinutes.toLong())
-        val timestamp = newAlarmTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-        val snoozeIntent = Intent(this, AlarmaReceiver::class.java).apply {
-            action = "com.idh.alarmadespertador.SNOOZE_ALARM"
-            putExtra("EXTRA_NEW_ALARM_TIME", timestamp)
+    private fun snoozeAlarm(snoozeTime: Int) {
+        Log.d("AlarmaActivadaActivity", "Snooze Time: $snoozeTime minutos")
+        // Enviar un Intent a AlarmaService para manejar snooze
+        val snoozeIntent = Intent(this, AlarmaService::class.java).apply {
+            action = ACTION_SNOOZE
+            putExtra("EXTRA_SNOOZE_TIME", snoozeTime)
+            putExtra("EXTRA_ID_ALARMA", alarmaId)
+            putExtra("EXTRA_SOUND_URI", soundUri)
+            putExtra("EXTRA_VIBRATE", vibrate)
+            putExtra("EXTRA_LABEL", label)
         }
-        sendBroadcast(snoozeIntent)
-
-        stopAlarmSound()
-        // Cerrar la actividad
+        startService(snoozeIntent)
         finish()
-    }
-    // Logica para detener el sonido
-    private fun stopAlarmSound() {
-        val stopIntent = Intent(this, AlarmaService::class.java).apply {
-            action = "com.idh.alarmadespertador.STOP_ALARM"
-        }
-        startService(stopIntent)
     }
 
     private fun stopAlarm() {
-        // Detener la alarma
         val serviceIntent = Intent(this, AlarmaService::class.java).apply {
-            action = "com.idh.alarmadespertador.STOP_ALARM"
+            action = ACTION_STOP_ALARM
         }
         startService(serviceIntent)
-
-        // Cerrar la actividad
         finish()
     }
 

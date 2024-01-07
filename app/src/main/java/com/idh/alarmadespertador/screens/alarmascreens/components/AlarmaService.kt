@@ -1,13 +1,23 @@
 package com.idh.alarmadespertador.screens.alarmascreens.components
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.icu.text.SimpleDateFormat
 import android.media.Ringtone
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.IBinder
 import android.os.PowerManager
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.idh.alarmadespertador.R
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_ACTIVATE_ALARM
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_SNOOZE
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_STOP_ALARM
+import java.util.Locale
 
 /*AlarmaService es un servicio en segundo plano que gestiona la reproducción de una alarma.
 Usa un WakeLock para asegurarse de que el dispositivo permanezca despierto mientras la alarma está activa,
@@ -15,71 +25,114 @@ Usa un WakeLock para asegurarse de que el dispositivo permanezca despierto mient
  y maneja las acciones de activar y detener la alarma.*/
 
 class AlarmaService : Service() {
-    // Ringtone representa el sonido de la alarma.
+
     private var ringtone: Ringtone? = null
-
-    // WakeLock se utiliza para mantener el dispositivo despierto mientras la alarma está activa
-    private var wakeLock: PowerManager.WakeLock? = null
-
-    override fun onCreate() {
-        super.onCreate()
-        // Inicializar el WakeLock para evitar que el dispositivo entre en modo de suspensión.
-        // Obtener el PowerManager y crear un WakeLock
-        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
-        wakeLock =
-            powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp::AlarmWakeLockTag")
-        wakeLock?.acquire(10 * 60 * 1000L /*10 minutos*/) // Tiempo de bloqueo
-    }
-
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        // Este método maneja los comandos enviados al servicio, como activar o detener la alarma
-        if (intent.action == "com.idh.alarmadespertador.ALARMA_ACTIVADA") {
-            // Si la acción es activar la alarma, se muestra una notificación en primer plano y se reproduce el sonido de la alarma.
-            // Código para notificación en primer plano
-            val notification = NotificationCompat.Builder(this, "alarma_channel_id")
-                .setContentTitle("Alarma activa")
-                .setContentText("La alarma está sonando")
-                .setSmallIcon(R.drawable.ic_alarmoff)
-                .build()
-            startForeground(1, notification)
 
-            // Reproducir sonido de la alarma
-            ringtone = RingtoneManager.getRingtone(
-                this,
-                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-            )
-            ringtone?.play()
-            // Iniciar una actividad para mostrar la pantalla de alarma activada
-            val alarmaIntent = Intent(this, AlarmaActivadaActivity::class.java)
-            alarmaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            //       alarmaIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(alarmaIntent)
+        // Recuperar los datos de la alarma del Intent
+        val alarmaId = intent.getIntExtra("EXTRA_ID_ALARMA", -1)
+        val soundUri = intent.getStringExtra("EXTRA_SOUND_URI")
+        val vibrate = intent.getBooleanExtra("EXTRA_VIBRATE", false)
+        val label = intent.getStringExtra("EXTRA_LABEL") ?: "Alarma"
 
-        } else if (intent.action == "com.idh.alarmadespertador.STOP_ALARM") {
-            // Si la acción es detener la alarma, se detiene el sonido y el servicio.
-            stopAlarm()
+        when (intent.action) {
+
+            ACTION_ACTIVATE_ALARM -> {
+                Log.d("AlarmaService", "Recibida acción ACTIVATE_ALARM")
+                reproducirSonidoAlarma(alarmaId, soundUri, vibrate, label)
+            }
+            ACTION_SNOOZE -> {
+                Log.d("AlarmaService", "Recibida acción SNOOZE. URI: $soundUri")
+                val snoozeTime = intent.getIntExtra("EXTRA_SNOOZE_TIME", 3) // Valor predeterminado de 5 minutos
+                if (soundUri != null) {
+                    snoozeAlarma(snoozeTime, alarmaId, soundUri, vibrate, label)
+                }
+            }
+            ACTION_STOP_ALARM -> {
+                Log.d("AlarmaService", "Recibida acción STOP_ALARM")
+                stopAlarmSound()
+            }
+            else -> {
+                Log.d("AlarmaService", "Recibida acción desconocida: ${intent.action}")
+                // Manejar otras acciones, como reproducir sonido de alarma
+            }
         }
-
         return START_NOT_STICKY
         // Indica que si el sistema mata el servicio, no necesita recrearlo.
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // Al destruir el servicio, liberar el WakeLock para permitir que el dispositivo entre en modo de suspensión.
-        // Liberar el WakeLock cuando el servicio se destruya
-        wakeLock?.release()
+    private fun reproducirSonidoAlarma(alarmaId: Int, soundUri: String?, vibrate: Boolean, label: String) {
+
+         ringtone = if (soundUri.isNullOrEmpty()) {
+            RingtoneManager.getRingtone(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))
+        } else {
+            RingtoneManager.getRingtone(this, Uri.parse(soundUri))
+        }
+
+        if (ringtone != null) {
+            Log.d("AlarmaService", "Reproduciendo ringtone con hashCode: ${ringtone.hashCode()}")
+            ringtone?.play()
+        } else {
+            Log.d("AlarmaService", "Ringtone es null, no se puede reproducir")
+        }
+
+        Log.d("AlarmaService", "Ringtone creado: ${ringtone.hashCode()}")
+        ringtone?.play()
+
+        // Iniciar la actividad AlarmaActivadaActivity con los datos extras
+        val intent = Intent(this, AlarmaActivadaActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Necesario cuando se inicia desde un servicio
+            putExtra("EXTRA_ID_ALARMA", alarmaId)
+            putExtra("EXTRA_SOUND_URI", soundUri)
+            putExtra("EXTRA_VIBRATE", vibrate)
+            putExtra("EXTRA_LABEL", label)
+        }
+        startActivity(intent)
+    }
+    fun snoozeAlarma(snoozeMinutes: Int, alarmaId: Int, soundUri: String, vibrate: Boolean, label: String) {
+        // Detener el sonido actual
+        ringtone?.stop()
+
+        // Calcular el nuevo tiempo de activación para la alarma snooze
+        val snoozeTimeInMillis = System.currentTimeMillis() + snoozeMinutes * 60 * 1000
+
+        // Formatear el tiempo de activación para el log
+        val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+        val snoozeTimeFormatted = dateFormat.format(snoozeTimeInMillis)
+
+
+        // Crear un Intent para AlarmaReceiver con la acción ACTIVATE_ALARM
+        val activateAlarmIntent = Intent(this, AlarmaReceiver::class.java).apply {
+            action = ACTION_ACTIVATE_ALARM
+            putExtra("EXTRA_ID_ALARMA", alarmaId)
+            putExtra("EXTRA_SOUND_URI", soundUri)
+            putExtra("EXTRA_VIBRATE", vibrate)
+            putExtra("EXTRA_LABEL", label)
+            putExtra("EXTRA_NEW_ALARM_TIME", snoozeTimeInMillis) // Opcional, si necesitas ajustar algo específico para el snooze en el AlarmaReceiver
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, alarmaId, activateAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Reprogramar la alarma
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.set(AlarmManager.RTC_WAKEUP, snoozeTimeInMillis, pendingIntent)
+        Log.d("AlarmaService", "Alarma SNOOZE reprogramada con ID: $alarmaId, URI: $soundUri, para las: $snoozeTimeFormatted")
+        Log.d("AlarmaService", "Alarma reprogramada para el modo SNOOZE con ID: $alarmaId para $snoozeTimeInMillis")
     }
 
-    private fun stopAlarm() {
-        // Detiene el sonido de la alarma y el servicio.
-        ringtone?.stop()
-        stopSelf()
+    private fun stopAlarmSound() {
+        if (ringtone != null) {
+            Log.d("AlarmaService", "Deteniendo ringtone con hashCode: ${ringtone.hashCode()}")
+            ringtone?.stop()
+        } else {
+            Log.d("AlarmaService", "No hay ringtone para detener (ringtone es null)")
+        }
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        // Método para vincular el servicio, no es necesario en este caso.
         return null
     }
-}
 
+}

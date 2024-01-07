@@ -8,6 +8,11 @@ class Constantes {
         // Se utiliza el patrón companion object para hacer que estas constantes
         // sean estáticas y accesibles globalmente sin necesidad de instanciar la clase
 
+        //Alarma
+        const val ACTION_SNOOZE = "com.idh.alarmadespertador.ACTION_SNOOZE"
+        const val ACTION_ACTIVATE_ALARM = "com.idh.alarmadespertador.ALARMA_ACTIVADA"
+        const val ACTION_STOP_ALARM = "com.idh.alarmadespertador.STOP_ALARM"
+
         //Room
         const val TEMPORIZADOR_TABLE = "temporizador_table"
         const val ALARMA_TABLE = "alarma_table"

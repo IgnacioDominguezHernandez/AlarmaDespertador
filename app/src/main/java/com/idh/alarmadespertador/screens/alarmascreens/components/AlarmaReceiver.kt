@@ -1,6 +1,7 @@
 package com.idh.alarmadespertador.screens.alarmascreens.components
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -12,16 +13,15 @@ import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.idh.alarmadespertador.R
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
+import com.idh.alarmadespertador.core.constants.Constantes.*
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_ACTIVATE_ALARM
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_SNOOZE
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_STOP_ALARM
+
 
 class AlarmaReceiver : BroadcastReceiver() {
 
@@ -30,56 +30,63 @@ class AlarmaReceiver : BroadcastReceiver() {
 
     //  private var ringtone: Ringtone? = null
     override fun onReceive(context: Context, intent: Intent) {
+
         Log.d("AlarmaReceiver", "onReceive: Acción recibida - ${intent.action}")
+
+        val alarmaId = intent.getIntExtra("EXTRA_ID_ALARMA", -1)
+        val soundUri = intent.getStringExtra("EXTRA_SOUND_URI")
+        val vibrate = intent.getBooleanExtra("EXTRA_VIBRATE", false)
+        val label = intent.getStringExtra("EXTRA_LABEL") ?: "Alarma"
+
         // Este método se llama cuando el AlarmaReceiver recibe un Intent (intención).
         when (intent.action) {
-            "com.idh.alarmadespertador.ALARMA_ACTIVADA" -> {
+            ACTION_ACTIVATE_ALARM  -> {
                 // Dependiendo de la acción del intent, se ejecutan diferentes bloques de código.
                 val serviceIntent = Intent(context, AlarmaService::class.java).apply {
                     action = "com.idh.alarmadespertador.ALARMA_ACTIVADA"
-                    // Cuando se recibe la acción ALARMA_ACTIVADA, se inicia un servicio en primer plano para manejar la alarma.
-                    // Se crea un Intent para iniciar AlarmaService.
+                    // Pasar los datos extras al AlarmaService
+                    putExtra("EXTRA_ID_ALARMA", alarmaId)
+                    putExtra("EXTRA_SOUND_URI", soundUri)
+                    putExtra("EXTRA_VIBRATE", vibrate)
+                    putExtra("EXTRA_LABEL", label)
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(serviceIntent)
                 } else {
                     context.startService(serviceIntent)
                 }
-                val label = intent.getStringExtra("EXTRA_LABEL") ?: "Alarma"
 
-                /*
-                                val alarmaId = intent.getIntExtra("EXTRA_ID_ALARMA", -1)
-                                val soundUri = intent.getStringExtra("EXTRA_SOUND_URI")
-                                val vibrate = intent.getBooleanExtra("EXTRA_VIBRATE", false)
-                                val label = intent.getStringExtra("EXTRA_LABEL") ?: "Alarma"
+                Log.d("AlarmaReceiver", "Alarma activada con ID: $alarmaId")
+                Log.d("AlarmaReceiver", "ID de Alarma: $alarmaId")
+                Log.d("AlarmaReceiver", "URI del Sonido: $soundUri")
+                Log.d("AlarmaReceiver", "Vibrar: $vibrate")
+                Log.d("AlarmaReceiver", "Etiqueta de la Alarma: $label")
 
-                                Log.d("AlarmaReceiver", "Alarma activada con ID: $alarmaId")
-                                Log.d("AlarmaReceiver", "ID de Alarma: $alarmaId")
-                                Log.d("AlarmaReceiver", "URI del Sonido: $soundUri")
-                                Log.d("AlarmaReceiver", "Vibrar: $vibrate")
-                                Log.d("AlarmaReceiver", "Etiqueta de la Alarma: $label")
-
-                                // Reproducir sonido de la alarma
-                                ringtone = if (soundUri != null) {
-                                    RingtoneManager.getRingtone(context, Uri.parse(soundUri))
-                                } else {
-                                    RingtoneManager.getRingtone(context, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))
-                                }
-                                ringtone?.play()
-
-                 */
                 // Mostrar notificación con acciones
                 mostrarNotificacionAlarma(context, "Alarma Activada", label)
             }
 
-            "com.idh.alarmadespertador.SNOOZE_ALARM" -> {
+            ACTION_STOP_ALARM -> {
+                // Lógica para detener el sonido de la alarma
+                // Debes detener el Ringtone o MediaPlayer que esté reproduciendo el sonido
+            }
+
+            ACTION_SNOOZE -> {
                 val timestamp = intent.getLongExtra("EXTRA_NEW_ALARM_TIME", -1L)
                 if (timestamp != -1L) {
-                    val newAlarmTime = LocalDateTime.ofInstant(
-                        Instant.ofEpochMilli(timestamp),
-                        ZoneId.systemDefault()
-                    )
-                    // Aquí implementar la lógica para reprogramar la alarma con newAlarmTime
+                    // Reprogramar la alarma
+                    val snoozeIntent = Intent(context, AlarmaReceiver::class.java).apply {
+                        action = "com.idh.alarmadespertador.ALARMA_ACTIVADA"
+                        putExtra("EXTRA_ID_ALARMA", alarmaId)
+                        putExtra("EXTRA_SOUND_URI", soundUri)
+                        putExtra("EXTRA_VIBRATE", vibrate)
+                        putExtra("EXTRA_LABEL", label)
+                    }
+                    val snoozePendingIntent = PendingIntent.getBroadcast(context, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, timestamp, snoozePendingIntent)
+
+                    Log.d("AlarmaReceiver", "Reprogramada alarma SNOOZE con ID: $alarmaId para $timestamp")
                 }
             }
         }

@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -36,31 +37,40 @@ class AlarmaViewModel @Inject constructor(
     fun crearAlarma(alarma: Alarma) {
         viewModelScope.launch(Dispatchers.IO) {
             // Añadir la alarma a la base de datos
-            repo.addAlarmaToRoom(alarma)
+
+            // Insertar la alarma en la base de datos y obtener el ID generado
+            val alarmaId = repo.addAlarmaToRoom(alarma)
+
+            alarma.id = alarmaId
+
+            // Actualizar la instancia de alarma con el ID generado
 
             // Programar la alarma si está habilitada
             if (alarma.isEnabled) {
-                val tiempoActivacion = calcularTiempoActivacion(alarma)
+       //         val tiempoActivacion = calcularTiempoActivacion(alarma)
                 Log.d(
                     "AlarmaViewModel",
-                    "Alarma creada: $alarma con tiempo de activación: $tiempoActivacion"
+                    "Alarma creada: $alarma con tiempo de activación: ${alarma.tiempoActivacion}"
                 )
-                programarOVerificarAlarma(alarma, tiempoActivacion)
+                programarOVerificarAlarma(alarma, alarma.tiempoActivacion)
             }
         }
     }
 
-    // Actualizar una alarma existente
-    fun actualizarAlarma(alarma: Alarma, cambioEnHorario: Boolean = false) {
+    fun actualizarAlarma(alarma: Alarma) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.updateAlarmaInRoom(alarma)
-            // Si la alarma está habilitada, reprogramarla. Si no, cancelarla.
+            // Calcula el próximo tiempo de activación si es necesario
+            val tiempoActivacion = if (alarma.isEnabled) calcularProximoTiempoActivacion(alarma) else alarma.tiempoActivacion
+
+            // Actualiza la alarma en la base de datos
+            val alarmaActualizada = alarma.copy(tiempoActivacion = tiempoActivacion)
+            repo.updateAlarmaInRoom(alarmaActualizada)
+
+            // Reprograma o cancela la alarma en el AlarmManager
             if (alarma.isEnabled) {
-                val tiempoActivacion =
-                    if (cambioEnHorario) calcularTiempoActivacion(alarma) else alarma.tiempoActivacion
-                programarOVerificarAlarma(alarma, tiempoActivacion)
+                programarOVerificarAlarma(alarmaActualizada, tiempoActivacion)
             } else {
-                cancelarAlarma(alarma)
+                cancelarAlarma(alarmaActualizada)
             }
         }
     }
@@ -122,12 +132,13 @@ class AlarmaViewModel @Inject constructor(
             action = "com.idh.alarmadespertador.ALARMA_ACTIVADA"
             putExtra("EXTRA_ID_ALARMA", alarma.id)
             putExtra("EXTRA_SOUND_URI", alarma.soundUri)
+            putExtra("PROGRAMAR ALARMA", "PROGRAMANDO ALARMA")
             putExtra("EXTRA_VIBRATE", alarma.vibrate)
             putExtra("EXTRA_LABEL", alarma.label)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             appContext,
-            alarma.id,
+            alarma.id.toInt(),
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE // Cambio aquí
         )
@@ -167,18 +178,35 @@ class AlarmaViewModel @Inject constructor(
     // alarma (alarma.id) se utiliza como requestCode para distinguirlo de otras alarmas o PendingIntents.
     // Finalmente, llama al método cancel del AlarmManager, pasándole el PendingIntent creado.
     // Esto efectivamente cancela cualquier alarma que haya sido programada con ese PendingIntent específico.
+
     fun cancelarAlarma(alarma: Alarma) {
-        val intent = Intent(appContext, AlarmaReceiver::class.java)
-        // Asegúrate de usar FLAG_IMMUTABLE aquí
+        val intent = Intent(appContext, AlarmaReceiver::class.java).apply {
+            action = "com.idh.alarmadespertador.ALARMA_ACTIVADA"
+            putExtra("EXTRA_ID_ALARMA", alarma.id)
+            putExtra("EXTRA_SOUND_URI", alarma.soundUri)
+            putExtra("PROGRAMAR ALARMA", "PROGRAMANDO ALARMA")
+            putExtra("EXTRA_VIBRATE", alarma.vibrate)
+            putExtra("EXTRA_LABEL", alarma.label)
+        }
         val pendingIntent = PendingIntent.getBroadcast(
             appContext,
-            alarma.id,
+            alarma.id.toInt(),
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val alarmManager = appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pendingIntent)
+
+        // Logs de depuración
+        Log.d("AlarmaViewModel", "Cancelando alarma con ID: ${alarma.id}")
+        Log.d("AlarmaViewModel", "URI del Sonido: ${alarma.soundUri}")
+        Log.d("AlarmaViewModel", "Etiqueta de la Alarma: ${alarma.label}")
+
+        // Convertir tiempo de activación de milisegundos a una representación legible
+        val formatoHora = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val horaFormateada = formatoHora.format(Date(alarma.tiempoActivacion))
+        Log.d("AlarmaViewModel", "Hora programada: $horaFormateada")
     }
 
     //Se establece el tiempo en milisegundos de esta instancia de Calendar al tiempo de activación de la alarma,
@@ -204,35 +232,26 @@ class AlarmaViewModel @Inject constructor(
     //La función calcularProximoTiempoActivacion calcula el próximo tiempo de activación
     // para una alarma recurrente basada en los días de la semana que ha sido programada para sonar.
     fun calcularProximoTiempoActivacion(alarma: Alarma): Long {
-        val diasDeLaSemana = listOf("L", "M", "X", "J", "V", "S", "D")
         val calendario = Calendar.getInstance()
-
-        // Establecer la hora y minuto de la alarma basado en tiempoActivacion
         calendario.timeInMillis = alarma.tiempoActivacion
+
+        val hora = calendario.get(Calendar.HOUR_OF_DAY)
+        val minutos = calendario.get(Calendar.MINUTE)
+
+        calendario.set(Calendar.HOUR_OF_DAY, hora)
+        calendario.set(Calendar.MINUTE, minutos)
         calendario.set(Calendar.SECOND, 0)
         calendario.set(Calendar.MILLISECOND, 0)
 
-        // Verificar si hoy es uno de los días seleccionados y aún no ha pasado la hora
-        val hoy = calendario.get(Calendar.DAY_OF_WEEK)
-        val indexHoy = (hoy + 5) % 7 // Ajustar el índice según Calendar.DAY_OF_WEEK
-
-        if (alarma.dias[indexHoy] != '_' && calendario.timeInMillis > System.currentTimeMillis()) {
-            return calendario.timeInMillis
+        // Si ya pasó la hora para hoy, programa para el día siguiente.
+        if (calendario.before(Calendar.getInstance())) {
+            calendario.add(Calendar.DAY_OF_YEAR, 1)
         }
 
-        // Buscar el próximo día de la semana activo
-        var diasParaProximo = 1
-        while (diasParaProximo < 7) {
-            if (alarma.dias[(indexHoy + diasParaProximo) % 7] != '_') {
-                calendario.add(Calendar.DAY_OF_YEAR, diasParaProximo)
-                return calendario.timeInMillis
-            }
-            diasParaProximo++
-        }
-
-        // Si no se encontró ningún día, devolver -1 (indica que no hay próxima activación)
-        return -1
+        return calendario.timeInMillis
     }
+
+
 
 
 }

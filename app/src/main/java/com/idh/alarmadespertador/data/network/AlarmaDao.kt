@@ -21,8 +21,13 @@ interface AlarmaDao {
     // Agrega una nueva Alarma a la base de datos.
     // 'alarma' es una instancia de Alarma que se insertará.
     // OnConflictStrategy.IGNORE significa que si una alarma idéntica ya existe, la nueva inserción será ignorada.
+  //  @Insert(onConflict = OnConflictStrategy.IGNORE)
+   // suspend fun addAlarma(alarma: Alarma)
+
+    //Así al crear la alarma el método devuelve el ID, que es un LONG
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addAlarma(alarma: Alarma)
+    suspend fun addAlarma(alarma: Alarma): Long
+
 
     // Obtiene una Alarma específica por su id.
     @Query("SELECT * FROM ALARMA_TABLE WHERE id = :id")

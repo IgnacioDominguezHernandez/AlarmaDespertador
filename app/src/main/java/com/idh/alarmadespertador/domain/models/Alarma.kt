@@ -10,7 +10,7 @@ import com.idh.alarmadespertador.core.constants.Constantes.Companion.ALARMA_TABL
 @Entity(tableName = ALARMA_TABLE)
 data class Alarma(
     @PrimaryKey(autoGenerate = true)
-    var id: Int,
+    var id: Long,
     var tiempoActivacion: Long,
 
     var dias: String,  // Lista de días LMXJVSD

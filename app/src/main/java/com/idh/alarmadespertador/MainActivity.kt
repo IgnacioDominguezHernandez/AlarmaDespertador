@@ -86,7 +86,9 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_MyApp)
+
+        setTheme(R.style.Theme_Alarmadespertador)
+
         super.onCreate(savedInstanceState)
         NotificationHelper.createNotificationChannel(this)
 

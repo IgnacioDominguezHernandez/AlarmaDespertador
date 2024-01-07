@@ -17,7 +17,12 @@ class AlarmaRepositoryImpl(
     override suspend fun getAlarmaFromRoom(id: Int): Alarma = alarmaDao.getAlarma(id)
 
     // Añade una nueva alarma a la base de datos.
-    override suspend fun addAlarmaToRoom(alarma: Alarma) = alarmaDao.addAlarma(alarma)
+    //override suspend fun addAlarmaToRoom(alarma: Alarma) = alarmaDao.addAlarma(alarma)
+
+    override suspend fun addAlarmaToRoom(alarma: Alarma): Long {
+        return alarmaDao.addAlarma(alarma)
+    }
+
 
     // Actualiza una alarma existente en la base de datos.
     override suspend fun updateAlarmaInRoom(alarma: Alarma) = alarmaDao.updateAlarma(alarma)

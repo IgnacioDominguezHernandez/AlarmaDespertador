@@ -2,14 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -19,11 +19,11 @@
         android:name=".MyAppCrud"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:enableOnBackInvokedCallback="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.Alarmadespertador"
         tools:targetApi="31">
@@ -39,7 +39,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".screens.alarmascreens.components.AlarmaReceiver"
+        <receiver
+            android:name=".screens.alarmascreens.components.AlarmaReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.idh.alarmadespertador.ALARMA_ACTIVADA" />
@@ -48,20 +49,23 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".screens.alarmascreens.components.AlarmaService"
+        <service
+            android:name=".screens.alarmascreens.components.AlarmaService"
             android:exported="false" />
 
         <activity android:name=".screens.alarmascreens.components.AlarmaActivadaActivity" />
 
 
-        <receiver android:name=".screens.alarmascreens.components.BootCompletedReceiver"
+        <receiver
+            android:name=".screens.alarmascreens.components.BootCompletedReceiver"
             android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.BOOT_COMPLETED"/>
-        </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
         </receiver>
 
-        <receiver android:name=".MyWidgetProvider"
+        <receiver
+            android:name=".MyWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
