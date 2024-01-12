@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.idh.alarmadespertador.domain.models.Alarma
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import java.time.Instant
 import java.time.LocalTime
 import java.time.ZoneId
@@ -56,23 +57,27 @@ fun AlarmaCard(alarma: Alarma, onAlarmaChanged: (Alarma) -> Unit, onDeleteAlarma
 
             // Fila para el nombre y su valor
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = "Nombre:",
                     style = MaterialTheme.typography.bodySmall, // Tamaño pequeño para el rótulo
                     color = MaterialTheme.colorScheme.onSurface // Color para el texto del rótulo
                 )
-                Spacer(modifier = Modifier.width(8.dp)) // Espaciado entre texto y valor
+                Spacer(modifier = Modifier.weight(1f)) // Espaciado entre texto y valor
                 Text(
                     text = alarma.label,
                     style = MaterialTheme.typography.bodyLarge, // Tamaño grande para el nombre de la alarma
                     color = MaterialTheme.colorScheme.primary // Color primario para el nombre de la alarma
                 )
+                Spacer(modifier = Modifier.weight(1f))
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = "Hora:",
@@ -82,13 +87,21 @@ fun AlarmaCard(alarma: Alarma, onAlarmaChanged: (Alarma) -> Unit, onDeleteAlarma
                 Spacer(modifier = Modifier.width(8.dp)) // Espaciado entre texto y valor
                 Text(
                     text = horaFormateada,
+                    modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.titleMedium, // Tamaño mediano para la hora
-                    color = MaterialTheme.colorScheme.secondary // Color secundario para la hora
+                    color = MaterialTheme.colorScheme.secondary,
+                    textAlign = TextAlign.Center
+                )
+                Switch(
+                    checked = isEnabledState.value,
+                    onCheckedChange = {
+                        isEnabledState.value = it
+                        onAlarmaChanged(alarma.copy(isEnabled = it))
+                    }
                 )
             }
             //     Text(text = "Días: ${alarma.dias}", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(8.dp))
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -99,15 +112,8 @@ fun AlarmaCard(alarma: Alarma, onAlarmaChanged: (Alarma) -> Unit, onDeleteAlarma
                 )
                 Text(
                     text = if (isEnabledState.value) "Activada" else "Desactivada",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.tertiary
-                )
-                Switch(
-                    checked = isEnabledState.value,
-                    onCheckedChange = {
-                        isEnabledState.value = it
-                        onAlarmaChanged(alarma.copy(isEnabled = it))
-                    }
                 )
             }
         }

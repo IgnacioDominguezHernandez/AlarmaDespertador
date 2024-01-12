@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.idh.alarmadespertador.domain.models.EstadoReloj
 import com.idh.alarmadespertador.screens.temporizadorscreens.components.AddTemporizadorAlertDialog
 import com.idh.alarmadespertador.screens.temporizadorscreens.components.TemporizadorContent
 import com.idh.alarmadespertador.viewmodels.TemporizadorViewModel
@@ -29,9 +30,7 @@ fun TemporizadorScreen(
     viewModel: TemporizadorViewModel = hiltViewModel(),
     navigateToUpdateTemporizadorScreen: (temporizadorId: Int) -> Unit
 ) {
-
     val temporizadorState = viewModel.temporizadorState.collectAsState()
-
     Log.d("TemporizadorScreen", "Temporizadores en pantalla: ${temporizadorState.value.size}")
 
     Scaffold(
@@ -63,7 +62,12 @@ fun TemporizadorScreen(
                         viewModel.deleteTemporizador(temporizador)
                     },
                     onPlayPause = { temporizadorId, nuevoEstado ->
-                        viewModel.cambiarEstadoTemporizadorEnMemoria(temporizadorId, nuevoEstado)
+                        viewModel.cambiarEstadoTemporizador(temporizadorId, nuevoEstado)
+                        if (nuevoEstado == EstadoReloj.ACTIVO) {
+                            viewModel.startTimer(temporizadorId)
+                        } else {
+                            viewModel.pausarTimer(temporizadorId)
+                        }
                     },
                     onFinish = {
                         Log.d("TemporizadorSCREEN", "El temporizador ha llegado a cero.")
@@ -74,9 +78,7 @@ fun TemporizadorScreen(
                 AddTemporizadorAlertDialog(
                     openDialog = viewModel.openDialog,
                     closeDialog = { viewModel.closeDialog() },
-                    addTemporizador = { temporizador ->
-                        viewModel.addTemporizador(temporizador)
-                    }
+                    temporizadorViewModel = viewModel
                 )
             }
         }

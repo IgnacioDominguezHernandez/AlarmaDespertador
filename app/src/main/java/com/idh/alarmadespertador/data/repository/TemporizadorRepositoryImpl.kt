@@ -1,5 +1,6 @@
 package com.idh.alarmadespertador.data.repository
 
+import android.util.Log
 import com.idh.alarmadespertador.data.network.TemporizadorDao
 import com.idh.alarmadespertador.domain.models.Temporizador
 import com.idh.alarmadespertador.domain.repository.TemporizadorRepository
@@ -33,6 +34,7 @@ class TemporizadorRepositoryImpl(
     //Borra un temporizador
     override fun deleteTemporizadorFromRoom(temporizador: Temporizador) {
         temporizadorDao.deleteTemporizador(temporizador)
+        Log.d("TemporizadorRepositoryImp", "Temporizador eliminado: ${temporizador.id}")
     }
 
     override fun updateTemporizadoresInRoom(temporizadores: List<Temporizador>) {

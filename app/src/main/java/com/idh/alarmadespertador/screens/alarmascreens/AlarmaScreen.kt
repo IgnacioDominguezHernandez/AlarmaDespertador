@@ -25,7 +25,7 @@ import com.idh.alarmadespertador.viewmodels.AlarmaViewModel
 @Composable
 fun AlarmaScreen(viewModel: AlarmaViewModel = hiltViewModel()) {
 
-    val alarmas = viewModel.alarmas.collectAsState(initial = emptyList())
+    val alarmas = viewModel.alarmas.collectAsState(initial = emptyList()).value
 
     var showDialog by remember { mutableStateOf(false) }
 
@@ -41,11 +41,8 @@ fun AlarmaScreen(viewModel: AlarmaViewModel = hiltViewModel()) {
         }
     ) { innerPadding ->
         LazyColumn(contentPadding = innerPadding) {
-            items(alarmas.value) { alarma ->
-                AlarmaCard(
-                    alarma = alarma,
-                    onAlarmaChanged = { viewModel.actualizarAlarma(it) },
-                    onDeleteAlarma = { viewModel.eliminarAlarma(alarma) })
+            items(alarmas, key = { alarma -> alarma.id }) { alarma ->
+                AlarmaCard(alarma, viewModel::actualizarAlarma, { viewModel.eliminarAlarma(alarma) })
             }
         }
         if (showDialog) {

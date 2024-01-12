@@ -102,26 +102,25 @@ class AlarmaReceiver : BroadcastReceiver() {
         val notificationBuilder = NotificationCompat.Builder(context, "alarma_channel_id")
             .setContentTitle(title)
             .setContentText(content)
-            .setSmallIcon(androidx.core.R.drawable.ic_call_answer)
+            .setSmallIcon(androidx.core.R.drawable.ic_call_answer_low)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         // Acción para detener la alarma
-        val stopIntent = Intent(context, AlarmaReceiver::class.java).apply {
-            action = "DETENER_ALARMA"
+        val stopIntent = Intent(context, AlarmaService::class.java).apply {
+            action = ACTION_STOP_ALARM
         }
         val stopPendingIntent = PendingIntent.getBroadcast(
             context, 0, stopIntent,
             PendingIntent.FLAG_IMMUTABLE
         )
         notificationBuilder.addAction(
-            androidx.core.R.drawable.ic_call_answer,
+            androidx.core.R.drawable.ic_call_answer_low,
             "Detener",
             stopPendingIntent
         )
-
         // Acción para posponer la alarma
-        val snoozeIntent = Intent(context, AlarmaReceiver::class.java).apply {
-            action = "POSTPONER_ALARMA"
+        val snoozeIntent = Intent(context, AlarmaService::class.java).apply {
+            action = ACTION_SNOOZE
         }
         val snoozePendingIntent = PendingIntent.getBroadcast(
             context, 1, snoozeIntent,

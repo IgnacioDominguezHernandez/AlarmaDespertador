@@ -49,7 +49,6 @@ fun AppNavigation(
         ) { backStackEntry ->
             val temporizadorId = backStackEntry.arguments?.getInt("temporizadorId") ?: 0
             UpdateTemporizadorScreen(
-                temporizadorId = temporizadorId,
                 navigateBack = { navController.popBackStack() }
             )
         }
@@ -76,7 +75,6 @@ fun AppNavigation(
         ) { backStackEntry ->
             val temporizadorId = backStackEntry.arguments?.getInt("temporizadorId") ?: 0
             UpdateTemporizadorScreen(
-                temporizadorId = temporizadorId,
                 navigateBack = {
                     navController.popBackStack()
                 }

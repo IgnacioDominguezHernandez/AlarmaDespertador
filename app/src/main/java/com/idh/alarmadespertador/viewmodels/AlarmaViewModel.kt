@@ -47,7 +47,7 @@ class AlarmaViewModel @Inject constructor(
 
             // Programar la alarma si está habilitada
             if (alarma.isEnabled) {
-       //         val tiempoActivacion = calcularTiempoActivacion(alarma)
+                //         val tiempoActivacion = calcularTiempoActivacion(alarma)
                 Log.d(
                     "AlarmaViewModel",
                     "Alarma creada: $alarma con tiempo de activación: ${alarma.tiempoActivacion}"
@@ -60,7 +60,8 @@ class AlarmaViewModel @Inject constructor(
     fun actualizarAlarma(alarma: Alarma) {
         viewModelScope.launch(Dispatchers.IO) {
             // Calcula el próximo tiempo de activación si es necesario
-            val tiempoActivacion = if (alarma.isEnabled) calcularProximoTiempoActivacion(alarma) else alarma.tiempoActivacion
+            val tiempoActivacion =
+                if (alarma.isEnabled) calcularProximoTiempoActivacion(alarma) else alarma.tiempoActivacion
 
             // Actualiza la alarma en la base de datos
             val alarmaActualizada = alarma.copy(tiempoActivacion = tiempoActivacion)
@@ -250,8 +251,6 @@ class AlarmaViewModel @Inject constructor(
 
         return calendario.timeInMillis
     }
-
-
 
 
 }

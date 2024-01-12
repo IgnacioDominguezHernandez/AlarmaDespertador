@@ -3,6 +3,8 @@ package com.idh.alarmadespertador.screens.temporizadorscreens.components
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,7 +40,7 @@ fun TemporizadorCard(
     temporizador: Temporizador, // Pasa el objeto Temporizador completo
     deleteTemporizador: () -> Unit,
     navigateToUpdateTemporizadorScreen: (temporizadorId: Int) -> Unit,
-    onPlayPause: (Int ,EstadoReloj) -> Unit,
+    onPlayPause: (Int, EstadoReloj) -> Unit,
     onFinish: () -> Unit,
     viewModel: TemporizadorViewModel
 ) {
@@ -47,16 +49,41 @@ fun TemporizadorCard(
     val temporizadorState by viewModel.temporizadorState.collectAsState()
     val actualizadoTemporizador = temporizadorState[temporizador.id] ?: temporizador
 
-    LaunchedEffect(actualizadoTemporizador.estadoTemp) {
-        Log.d("TemporizadorCard", "Estado Temporizador actualizado: ${actualizadoTemporizador.estadoTemp}")
-        // Esto forzará la reconstrucción del composable cuando el estado cambie
+
+    var milisegundosRestantes by remember { mutableStateOf(temporizador.milisegundos) }
+
+    var mostrarDialogoFin by remember { mutableStateOf(false) }
+
+    LaunchedEffect(actualizadoTemporizador.estadoTemp, actualizadoTemporizador.id) {
+        while (milisegundosRestantes > 0 && actualizadoTemporizador.estadoTemp == EstadoReloj.ACTIVO) {
+            delay(1000)
+            if (actualizadoTemporizador.estadoTemp == EstadoReloj.ACTIVO) {
+                milisegundosRestantes -= 1000
+            }
+        }
+        if (milisegundosRestantes <= 0 && actualizadoTemporizador.estadoTemp == EstadoReloj.COMPLETADO) {
+            onFinish()
+            mostrarDialogoFin = true
+        }
     }
 
-    // Cálculos basados en el temporizador actualizado
-    val horas = actualizadoTemporizador.milisegundos / 3600000
-    val minutos = (actualizadoTemporizador.milisegundos % 3600000) / 60000
-    val segundos = (actualizadoTemporizador.milisegundos % 60000) / 1000
+    MostrarDialogoFinTemporizador(
+        mostrarDialogo = mostrarDialogoFin,
+        onDismiss = {
+            mostrarDialogoFin = false
+            val temporizadorActualizado = temporizador.copy(estadoTemp = EstadoReloj.PAUSADO)
+            viewModel.updateTemporizadorState(temporizadorActualizado)
+        },
+        nombreTemporizador = temporizador.nombreTemporizador,
+        idTemporizador = temporizador.id
+    )
+
+    // Convertir milisegundos a horas, minutos, segundos
+    val horas = milisegundosRestantes / 3600000
+    val minutos = (milisegundosRestantes % 3600000) / 60000
+    val segundos = (milisegundosRestantes % 60000) / 1000
     val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundos)
+
 
     Card(
         shape = MaterialTheme.shapes.medium,
@@ -76,45 +103,65 @@ fun TemporizadorCard(
             ),
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(12.dp)
         ) {
-            Column {
-
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 // Usar Row en lugar de Column para mostrar horas, minutos y segundos en una línea
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Formatear el tiempo en un formato de cuenta regresiva
-                    //  val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundos)
-                    Text(
-                        text = tiempoFormateado,
-                        style = MaterialTheme.typography.headlineMedium.copy(fontSize = 44.sp), // Aumentar el tamaño de la fuente
-                        modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
-                    )
-                }
-                Text(temporizador.nombreTemporizador, style = MaterialTheme.typography.titleSmall)
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-
-                Spacer(modifier = Modifier.width(38.dp))
-
-                DeleteIcon(deleteTemporizador = deleteTemporizador)
-
-                Spacer(modifier = Modifier.width(38.dp))
-
+                // Formatear el tiempo en un formato de cuenta regresiva
+                //  val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundos)
+                Text(
+                    text = tiempoFormateado,
+                    style = MaterialTheme.typography.headlineMedium.copy(fontSize = 24.sp), // Aumentar el tamaño de la fuente
+                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+                )
                 PlayPauseIcons(
                     temporizadorId = actualizadoTemporizador.id,
                     estadoTemporizador = actualizadoTemporizador.estadoTemp,
-                    onPlayPause = onPlayPause
+                    onPlayPause = { temporizadorId, nuevoEstado ->
+                        viewModel.cambiarEstadoTemporizador(temporizadorId, nuevoEstado)}
                 )
-
-            }
-                if (actualizadoTemporizador.estadoTemp == EstadoReloj.COMPLETADO) {
-                    onFinish()
-                }
             }
         }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Box para el nombre del temporizador (a la izquierda)
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = temporizador.nombreTemporizador,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            // Box para el botón de eliminar (centrado)
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                DeleteIcon(deleteTemporizador = deleteTemporizador)
+            }
+
+            // Box adicional para mantener el equilibrio (a la derecha)
+            Box(
+                modifier = Modifier.weight(1f)
+            ) {
+                // Aquí podrías agregar otro elemento si es necesario, o dejarlo vacío para equilibrar el diseño
+            }
+        }
+        if (actualizadoTemporizador.estadoTemp == EstadoReloj.COMPLETADO) {
+            onFinish()
+        }
     }
+}

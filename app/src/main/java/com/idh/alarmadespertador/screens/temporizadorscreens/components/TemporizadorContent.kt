@@ -37,9 +37,7 @@ fun TemporizadorContent(
                 temporizador = temporizador,
                 deleteTemporizador = { deleteTemporizador(temporizador) },
                 navigateToUpdateTemporizadorScreen = navigateToUpdateTemporizadorScreen,
-                onPlayPause = { temporizadorId ,nuevoEstado ->
-                    onPlayPause(temporizadorId ,nuevoEstado)
-                },
+                onPlayPause = onPlayPause,
                 onFinish = onFinish,
                 viewModel = viewModel
             )

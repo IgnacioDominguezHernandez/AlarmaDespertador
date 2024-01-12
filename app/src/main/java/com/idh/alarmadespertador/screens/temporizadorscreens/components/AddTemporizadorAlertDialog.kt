@@ -42,18 +42,9 @@ import androidx.compose.ui.unit.sp
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.DISMISS
 import com.idh.alarmadespertador.domain.models.EstadoReloj
 import com.idh.alarmadespertador.domain.models.Temporizador
+import com.idh.alarmadespertador.viewmodels.TemporizadorViewModel
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewAddTemporizadorAlertDialog() {
-    Surface(color = MaterialTheme.colorScheme.background) {
-        AddTemporizadorAlertDialog(
-            openDialog = true,
-            closeDialog = {},
-            addTemporizador = {},
-        )
-    }
-}
+
 // Vista del Alert para añadir un nuevo temporizador.
 // Este temporizador cuando está con los datos necesarios se guarda en la BD a traves del ViewModel
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +52,7 @@ fun PreviewAddTemporizadorAlertDialog() {
 fun AddTemporizadorAlertDialog(
     openDialog: Boolean,
     closeDialog: () -> Unit,
-    addTemporizador: (temporizador: Temporizador) -> Unit,
+    temporizadorViewModel: TemporizadorViewModel
 ) {
     if (openDialog) {
 
@@ -144,28 +135,7 @@ fun AddTemporizadorAlertDialog(
                             .fillMaxWidth()
                             .padding(start = 16.dp)
                     ) {
-                        Switch(
-                            checked = vibracion,
-                            onCheckedChange = { vibracion = it },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = MaterialTheme.colorScheme.primary,
-                                uncheckedThumbColor = MaterialTheme.colorScheme.onSurface
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            "Vibración",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
                         Spacer(modifier = Modifier.width(32.dp)) // Espacio entre el switch y el botón
-
-                        Button(onClick = { /* Implementar lógica */ }) {
-                            Text(
-                                "Melodía", style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
                     }
 
                     Spacer(modifier = Modifier.height(32.dp)) // Espacio entre las filas
@@ -195,7 +165,19 @@ fun AddTemporizadorAlertDialog(
             },
             confirmButton = {
                 TextButton(
-                    onClick = { /* Lógica de confirmación */ },
+                    onClick = {
+                        val totalMilisegundos = (horas * 3600000) + (minutos * 60000) + (segundos * 1000)
+                        val nuevoTemporizador = Temporizador(
+                            id = 0, // El ID se genera automáticamente si es autoincrement
+                            milisegundos = totalMilisegundos,
+                            nombreTemporizador = nombreTemporizador,
+                            vibracion = false,
+                            sonidoUri = "",
+                            estadoTemp = EstadoReloj.ACTIVO
+                        )
+                        temporizadorViewModel.addTemporizador(nuevoTemporizador)
+                        closeDialog()
+                    },
                     enabled = horas != 0 || minutos != 0 || segundos != 0,
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                 ) {

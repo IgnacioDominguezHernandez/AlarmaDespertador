@@ -109,6 +109,8 @@ private val DarkWeatherColors = darkColorScheme(
     onSurface = Color.White,
 )
 
+
+
 @Composable
 fun WeatherColorsTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),

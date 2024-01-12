@@ -36,6 +36,7 @@ val md_theme_light_surfaceTint = Color(0xFF8143A1)
 val md_theme_light_outlineVariant = Color(0xFFCEC3CE)
 val md_theme_light_scrim = Color(0xFF000000)
 
+
 val md_theme_light_primary_weather = Color(0xFF87CEEB) // Azul cielo claro
 val md_theme_light_secondary_weather = Color(0xFFAFEEEE) // Azul turquesa pálido
 val md_theme_light_background_weather = Color(0xFFF0F0F0) // Gris muy claro
@@ -83,3 +84,5 @@ val md_theme_dark_outlineVariant = Color(0xFF4C444D)
 val md_theme_dark_scrim = Color(0xFF000000)
 
 val seed = Color(0xFF8143A1)
+
+

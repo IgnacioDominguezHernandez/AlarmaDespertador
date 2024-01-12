@@ -100,7 +100,6 @@ class AlarmaService : Service() {
         val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
         val snoozeTimeFormatted = dateFormat.format(snoozeTimeInMillis)
 
-
         // Crear un Intent para AlarmaReceiver con la acción ACTIVATE_ALARM
         val activateAlarmIntent = Intent(this, AlarmaReceiver::class.java).apply {
             action = ACTION_ACTIVATE_ALARM

@@ -18,7 +18,7 @@ fun PlayPauseIcons(
 ) {
     IconButton(onClick = {
         val nuevoEstado = if (estadoTemporizador == EstadoReloj.ACTIVO) EstadoReloj.PAUSADO else EstadoReloj.ACTIVO
-        Log.d("PlayPauseInteraction", "Clic en PlayPause: Estado actual: $estadoTemporizador, Nuevo estado: $nuevoEstado")
+        Log.d("PlayPauseInteraction", "Clic en PlayPause: ID Temporizador: $temporizadorId, Estado actual: $estadoTemporizador, Nuevo estado: $nuevoEstado")
         onPlayPause(temporizadorId, nuevoEstado) // Primero el ID, luego el estado
     }) {
         val icono = if (estadoTemporizador == EstadoReloj.ACTIVO) Icons.Default.Pause else Icons.Default.PlayArrow
