@@ -9,12 +9,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ALARMA_SCREEN
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.CLIMA_SCREEN
-import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_SCREEN
+import com.idh.alarmadespertador.core.constants.Constantes.Companion.MEDITACION_SCREEN
 import com.idh.alarmadespertador.screens.topupscreens.ConfigurarApariencia
 import com.idh.alarmadespertador.screens.topupscreens.ConfigurarFormato
 import com.idh.alarmadespertador.screens.alarmascreens.AlarmaScreen
 import com.idh.alarmadespertador.screens.climascreens.ClimaScreen
-import com.idh.alarmadespertador.screens.temporizadorscreens.TemporizadorScreen
+import com.idh.alarmadespertador.screens.temporizadorscreens.MeditacionScreen
 import com.idh.alarmadespertador.screens.temporizadorscreens.updatetemporizador.UpdateTemporizadorScreen
 import com.idh.alarmadespertador.screens.topupscreens.AcercaDe
 
@@ -34,25 +34,9 @@ fun AppNavigation(
         composable(NavScreen.AlarmScreen.name) {
             AlarmaScreen()
         }
-        composable(NavScreen.TemporizadorScreen.name) {
-            TemporizadorScreen(
-                navigateToUpdateTemporizadorScreen = { temporizadorId ->
-                    // Usando DynamicNavRoutes para generar la ruta
-                    val route = DynamicNavRoutes.updateTemporizadorScreen(temporizadorId)
-                    navController.navigate(route)
-                }
-            )
+        composable(NavScreen.MeditacionScreen.name) {
+            MeditacionScreen()
         }
-        composable(
-            route = "updateTemporizadorScreen/{temporizadorId}",
-            arguments = listOf(navArgument("temporizadorId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val temporizadorId = backStackEntry.arguments?.getInt("temporizadorId") ?: 0
-            UpdateTemporizadorScreen(
-                navigateBack = { navController.popBackStack() }
-            )
-        }
-
         composable(NavScreen.ClimaScreen.name) {
             ClimaScreen()
         }
@@ -90,7 +74,7 @@ fun getCurrentScreenTitle(navController: NavHostController): String {
 
     return when (currentDestination?.route) {
         NavScreen.AlarmScreen.name -> ALARMA_SCREEN
-        NavScreen.TemporizadorScreen.name -> TEMPORIZADOR_SCREEN
+        NavScreen.MeditacionScreen.name -> MEDITACION_SCREEN
         NavScreen.ClimaScreen.name -> CLIMA_SCREEN
         // Añadir aquí más casos para otras pantallas
         else -> "Aplicación"

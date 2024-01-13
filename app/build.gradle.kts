@@ -110,5 +110,7 @@ dependencies {
 
     implementation ("com.google.android.gms:play-services-location:18.0.0")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.0")
+
     implementation ("androidx.compose.material3:material3:1.1.0-alpha06")
 }

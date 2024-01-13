@@ -2,7 +2,6 @@ package com.idh.alarmadespertador.domain.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_SCREEN
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_TABLE
 
 // Modelo de datos que representa la entidad para una base de datos Room
@@ -10,9 +9,9 @@ import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADO
 data class Temporizador(
     @PrimaryKey (autoGenerate = true)
     val id: Int,
-    var milisegundos : Int,
-    val nombreTemporizador: String,
-    val vibracion : Boolean,
-    val sonidoUri : String,
-    var estadoTemp: EstadoReloj
+    var milisegundosInicial : Long,
+    val nombreTemporizador: String? = null,
+    var mensajeFinalizacion: String? = null,
+    var milisegundosRestantes : Long,
+    var estadoTemp: EstadoReloj? = null
 )

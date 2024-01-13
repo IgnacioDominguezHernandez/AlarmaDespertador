@@ -1,22 +1,19 @@
 package com.idh.alarmadespertador.screens.temporizadorscreens.updatetemporizador
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.idh.alarmadespertador.screens.temporizadorscreens.updatetemporizador.components.UpdateTemporizadorContent
-import com.idh.alarmadespertador.viewmodels.TemporizadorViewModel
+
+import com.idh.alarmadespertador.viewmodels.MeditacionViewModel
 
 //Vista de update temporizador
 @Composable
 fun UpdateTemporizadorScreen(
-    viewModel: TemporizadorViewModel = hiltViewModel(),
+    viewModel: MeditacionViewModel = hiltViewModel(),
     navigateBack: () -> Unit
 ){
     
@@ -25,7 +22,6 @@ fun UpdateTemporizadorScreen(
         IconButton(onClick = navigateBack) {
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Volver")
         }
-
 
     }
 }

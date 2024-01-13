@@ -27,7 +27,7 @@ sealed class ItemsBottomNav(
     object Itembottomnav3 : ItemsBottomNav(
         Icons.Outlined.Timer,
         "Temporizador",
-        NavScreen.TemporizadorScreen.name
+        NavScreen.MeditacionScreen.name
     )
 
     object Itembottomnav4 : ItemsBottomNav(

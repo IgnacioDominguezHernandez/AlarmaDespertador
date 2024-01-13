@@ -1,5 +1,7 @@
 package com.idh.alarmadespertador.core.constants
 
+import com.idh.alarmadespertador.R
+
 
 class Constantes {
     companion object {
@@ -18,7 +20,7 @@ class Constantes {
         const val ALARMA_TABLE = "alarma_table"
 
         //Screens
-        const val TEMPORIZADOR_SCREEN = "Temporizador"
+        const val MEDITACION_SCREEN = "Meditación"
         const val UPDATE_TEMPORIZADOR_SCREEN = "Update Temporizador"
         const val ALARMA_SCREEN = "Alarma"
         const val RADIO_SCREEN = "Radio"
@@ -44,5 +46,20 @@ class Constantes {
         const val MINUTOS = "Minutos..."
         const val SEGUNDOS = "Segundos..."
         const val NO_VALUE = ""
+
+        //Melodias
+        const val MELODIA_1 = "airymeditationb"
+        const val MELODIA_2 = "hzconnectwith"
+        const val MELODIA_3 = "relaxingmusicvoluno"
+        const val MELODIA_4 = "meditationature"
+        const val MELODIA_5 = "path"
+
+        val MELODIAS = arrayOf(MELODIA_1, MELODIA_2, MELODIA_3, MELODIA_4, MELODIA_5)
+
+        fun obtenerMelodiaAleatoria(): String {
+            val randomIndex = (0 until MELODIAS.size).random()
+            return MELODIAS[randomIndex]
+        }
+
     }
 }
