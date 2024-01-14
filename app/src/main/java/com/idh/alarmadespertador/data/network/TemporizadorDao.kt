@@ -1,9 +1,7 @@
 package com.idh.alarmadespertador.data.network
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Ignore
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -18,6 +16,9 @@ import kotlinx.coroutines.flow.Flow
 // (Object Relational Mapping) que facilita el acceso y la manipulación de la base de datos SQLite
 @Dao
 interface TemporizadorDao {
+
+    @Query("SELECT * FROM TEMPORIZADOR_TABLE LIMIT 1")
+    fun getSingleTemporizador(): Temporizador
 
     //Obtiene una lista de todos los temporizadores almacenados en la base de datos.
     //Devuelve un Flow<Temporizadores>, permitiendo una observación reactiva de los cambios en los datos
@@ -40,8 +41,8 @@ interface TemporizadorDao {
     fun updateTemporizador(temporizador: Temporizador)
 
     //deleteTemporizador
-    @Delete
-    fun deleteTemporizador(temporizador: Temporizador)
+    @Query("DELETE FROM $TEMPORIZADOR_TABLE WHERE id = :id")
+    fun deleteTemporizador(id: Int)
 
     //Actualizar todos los temporizadore
     @Update

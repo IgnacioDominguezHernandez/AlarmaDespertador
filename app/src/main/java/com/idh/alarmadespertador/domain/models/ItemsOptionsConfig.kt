@@ -1,6 +1,7 @@
 package com.idh.alarmadespertador.domain.models
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Palette
@@ -19,6 +20,12 @@ sealed class ItemsOptionsConfig(
         Icons.Outlined.Palette,
         "Apariencia",
         NavScreen.ConfigurarApariencia.name
+    )
+
+    object ItemOptConfig3 : ItemsOptionsConfig(
+        Icons.Outlined.Assessment,
+        "Estadísticas",
+        NavScreen.EstadisticaMeditacion.name
     )
 
     object ItemOptConfig2 : ItemsOptionsConfig(

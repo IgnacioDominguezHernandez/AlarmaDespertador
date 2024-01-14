@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material.icons.outlined.Chair
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.MoreVert
@@ -102,6 +103,25 @@ fun DropdownMenuController(
                     text = "Temas",
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(start = 12.dp)
+                )
+            }
+        )
+        DropdownMenuItem(
+            onClick = {
+                setShowPuntos(false)
+                navController.navigate(NavScreen.EstadisticaMeditacion.name)
+            },
+            modifier = Modifier
+                .width(200.dp)
+                .height(48.dp),
+            leadingIcon = {
+                Icon(imageVector = Icons.Outlined.Assessment, contentDescription = "Estadísticas")
+            },
+            text = {
+                Text(
+                    text = "Estadisticas",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         )

@@ -5,13 +5,11 @@ import androidx.room.PrimaryKey
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_TABLE
 
 // Modelo de datos que representa la entidad para una base de datos Room
-@Entity (tableName = TEMPORIZADOR_TABLE)
+@Entity(tableName = TEMPORIZADOR_TABLE)
 data class Temporizador(
-    @PrimaryKey (autoGenerate = true)
+    @PrimaryKey
     val id: Int,
-    var milisegundosInicial : Long,
-    val nombreTemporizador: String? = null,
-    var mensajeFinalizacion: String? = null,
-    var milisegundosRestantes : Long,
-    var estadoTemp: EstadoReloj? = null
+    var veces: Int = 0,
+    var tiempo_transcurrido: Int = 0,
+    var completado: Int = 0
 )

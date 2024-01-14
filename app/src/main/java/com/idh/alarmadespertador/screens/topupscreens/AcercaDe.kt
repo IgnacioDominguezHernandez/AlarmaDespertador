@@ -2,11 +2,14 @@ package com.idh.alarmadespertador.screens.topupscreens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,6 +38,7 @@ fun AcercaDe() {
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 16.dp)
         )
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = """
                 Esta aplicación ha sido desarrollada por Ignacio Domínguez Hernández como parte de su proyecto final para el Grado Superior de Desarrollo de Aplicaciones Multimedia. El proyecto se ha llevado a cabo bajo la tutela académica del Colegio Salesianos Pizarrales, situado en Salamanca.

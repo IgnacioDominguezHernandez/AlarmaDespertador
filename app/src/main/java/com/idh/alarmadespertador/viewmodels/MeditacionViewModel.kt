@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MeditacionViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val repo: TemporizadorRepository //Para interactuar con la base de datos
+     //Para interactuar con la base de datos
 ) : ViewModel() {
 
     private var mediaPlayer: MediaPlayer? = null

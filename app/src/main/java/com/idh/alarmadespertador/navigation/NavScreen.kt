@@ -7,7 +7,8 @@ enum class NavScreen {
     ClimaScreen,
     AcercaDe,
     ConfigurarApariencia,
-    ConfigurarFormato
+    ConfigurarFormato,
+    EstadisticaMeditacion
 
 }
 

@@ -199,6 +199,7 @@ fun ContentBottomSheet(
     mainViewModel: MainViewModel) {
     val itemsConfiguration = listOf(
         ItemOptConfig1,
+        ItemOptConfig3,
         ItemOptConfig2
     )
     val scope = rememberCoroutineScope()

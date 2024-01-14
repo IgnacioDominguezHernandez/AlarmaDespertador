@@ -1,13 +1,10 @@
-package com.idh.alarmadespertador.screens.temporizadorscreens.components
+package com.idh.alarmadespertador.screens.meditacionscreen.components
 
-import android.media.MediaPlayer
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,19 +24,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import com.idh.alarmadespertador.R
+import androidx.lifecycle.viewModelScope
+import com.idh.alarmadespertador.domain.models.Temporizador
 import com.idh.alarmadespertador.viewmodels.MeditacionViewModel
+import com.idh.alarmadespertador.viewmodels.TopAppViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun DialogoMeditacion(
     viewModel: MeditacionViewModel,
+    topAppViewModel: TopAppViewModel,
     durationInMinutes: Int,
     melodyUri: Int,
     onDismiss: () -> Unit
@@ -52,6 +49,7 @@ fun DialogoMeditacion(
     var elapsedTimePassedMillis by remember { mutableStateOf(0L) }
 
     val totalSeconds = elapsedTimeMillis / 1000
+    val valorInicial : Int = durationInMinutes * 60
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60
 
@@ -82,10 +80,10 @@ fun DialogoMeditacion(
                 showDialogdos = false
             },
             title = {
-                Text("¡Bien hecho!", style = MaterialTheme.typography.bodyMedium)
+                Text("¡Bien hecho!", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
             },
             text = {
-                Text("Que tengas un bonito dia!", style = MaterialTheme.typography.bodyMedium)
+                Text("Que tengas un bonito dia!", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
             },
             confirmButton = {
                 Button(
@@ -94,6 +92,18 @@ fun DialogoMeditacion(
                         viewModel.detenerReproduccion()
                         viewModel.closeDialog()
                         onDismiss()
+
+                        val nuevoTemporizador = Temporizador(
+                            id = 1, // Siempre es el ID 1
+                            veces = 1, // Actualiza veces
+                            tiempo_transcurrido = valorInicial, // Calcula el tiempo en segundos
+                            completado = 1
+                        )
+                        Log.d("NuevoTemporizador", "Tiempo Transcurrido (segundos): ${elapsedTimePassedMillis / 1000}")
+                        viewModel.viewModelScope.launch {
+                            topAppViewModel.updateTemporizadorInRoom(nuevoTemporizador)
+                            onDismiss()
+                        }
                     },
                     modifier = Modifier.fillMaxWidth() // Ocupa todo el ancho disponible
                 ) {
@@ -102,7 +112,6 @@ fun DialogoMeditacion(
             }
         )
     }
-
 
     val mediaPlayer = viewModel.getMediaPlayer() // Obtener el MediaPlayer del ViewModel
 
@@ -133,7 +142,6 @@ fun DialogoMeditacion(
         ) {
             Column(
                 modifier = Modifier
-
                     .padding(32.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -157,7 +165,7 @@ fun DialogoMeditacion(
                     }, modifier = Modifier
                         .fillMaxWidth() // Hace que el botón sea tan ancho como sea posible
                         .height(68.dp), // Ajusta la altura para que el botón sea más grande
-                    colors = ButtonDefaults.buttonColors(
+                        colors = ButtonDefaults.buttonColors(
                         MaterialTheme.colorScheme.primary, // Color de fondo del botón
                         contentColor = MaterialTheme.colorScheme.onPrimary // Color del contenido del botón (texto, íconos)
                     )
@@ -174,7 +182,19 @@ fun DialogoMeditacion(
                     onClick = {
                         viewModel.detenerReproduccion()
                         viewModel.closeDialog()
-                        onDismiss()
+
+
+                        val nuevoTemporizador = Temporizador(
+                            id = 1, // Siempre es el ID 1
+                            veces = 1, // Actualiza veces
+                            tiempo_transcurrido = (elapsedTimePassedMillis / 1000).toInt(), // Calcula el tiempo en segundos
+                            completado = 0
+                        )
+                        Log.d("NuevoTemporizadorCancelar", "Tiempo Transcurrido (segundos): ${elapsedTimePassedMillis / 1000}")
+                        viewModel.viewModelScope.launch {
+                            topAppViewModel.updateTemporizadorInRoom(nuevoTemporizador)
+                            onDismiss()
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth() // Hace que el botón sea tan ancho como sea posible

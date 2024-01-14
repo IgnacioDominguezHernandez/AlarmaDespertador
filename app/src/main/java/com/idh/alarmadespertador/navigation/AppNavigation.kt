@@ -14,9 +14,10 @@ import com.idh.alarmadespertador.screens.topupscreens.ConfigurarApariencia
 import com.idh.alarmadespertador.screens.topupscreens.ConfigurarFormato
 import com.idh.alarmadespertador.screens.alarmascreens.AlarmaScreen
 import com.idh.alarmadespertador.screens.climascreens.ClimaScreen
-import com.idh.alarmadespertador.screens.temporizadorscreens.MeditacionScreen
-import com.idh.alarmadespertador.screens.temporizadorscreens.updatetemporizador.UpdateTemporizadorScreen
+import com.idh.alarmadespertador.screens.meditacionscreen.MeditacionScreen
+import com.idh.alarmadespertador.screens.meditacionscreen.updatetemporizador.UpdateTemporizadorScreen
 import com.idh.alarmadespertador.screens.topupscreens.AcercaDe
+import com.idh.alarmadespertador.screens.topupscreens.EstadisticaMeditacion
 
 /* Cada llamada a Composable define una ruta y su pantalla asociada.
     Por ejemplo, composable(NavScreen.AlarmScreen.name)
@@ -48,6 +49,9 @@ fun AppNavigation(
         }
         composable(NavScreen.ConfigurarFormato.name) {
             ConfigurarFormato()
+        }
+        composable(NavScreen.EstadisticaMeditacion.name) {
+            EstadisticaMeditacion()
         }
         composable(
             route = "rutaDeUpdateTemporizadorScreen/{temporizadorId}", // Usa la ruta directamente
