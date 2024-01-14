@@ -1,7 +1,10 @@
 package com.idh.alarmadespertador.screens.alarmascreens.components
 
 import android.app.KeyguardManager
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -35,6 +38,13 @@ class AlarmaActivadaActivity : ComponentActivity() {
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
+    // Definir una constante para la acción del intent de cierre
+    companion object {
+        const val ACTION_CLOSE_ALARM_ACTIVITY = "com.idh.alarmadespertador.action.CLOSE_ALARM_ACTIVITY"
+    }
+
+    private lateinit var closeReceiver: BroadcastReceiver
+
     private var alarmaId: Int = -1
     private var soundUri: String? = null
     private var vibrate: Boolean = false
@@ -67,6 +77,15 @@ class AlarmaActivadaActivity : ComponentActivity() {
                 stopAlarm = { stopAlarm() }
             )
         }
+
+        closeReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent?.action == ACTION_CLOSE_ALARM_ACTIVITY) {
+                    finish()
+                }
+            }
+        }
+        registerReceiver(closeReceiver, IntentFilter(ACTION_CLOSE_ALARM_ACTIVITY))
     }
     private fun snoozeAlarm(snoozeTime: Int) {
         Log.d("AlarmaActivadaActivity", "Snooze Time: $snoozeTime minutos")
@@ -89,6 +108,12 @@ class AlarmaActivadaActivity : ComponentActivity() {
         }
         startService(serviceIntent)
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Desregistrar el BroadcastReceiver
+        unregisterReceiver(closeReceiver)
     }
 
 }

@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         NotificationHelper.createNotificationChannel(this)
-
+        //Nombre del canal :
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
         val isDarkTheme = sharedPreferences.getBoolean("darkTheme", true)
 

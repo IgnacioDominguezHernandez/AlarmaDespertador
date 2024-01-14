@@ -22,8 +22,7 @@ import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_ACTI
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_SNOOZE
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_STOP_ALARM
 
-
-class AlarmaReceiver : BroadcastReceiver() {
+    class AlarmaReceiver : BroadcastReceiver() {
 
     // La clase AlarmaReceiver extiende de BroadcastReceiver para recibir eventos de broadcast (difusión).
     // Específicamente, esta clase se utiliza para manejar eventos relacionados con alarmas en la aplicación.
@@ -43,7 +42,7 @@ class AlarmaReceiver : BroadcastReceiver() {
             ACTION_ACTIVATE_ALARM  -> {
                 // Dependiendo de la acción del intent, se ejecutan diferentes bloques de código.
                 val serviceIntent = Intent(context, AlarmaService::class.java).apply {
-                    action = "com.idh.alarmadespertador.ALARMA_ACTIVADA"
+                    action = ACTION_ACTIVATE_ALARM
                     // Pasar los datos extras al AlarmaService
                     putExtra("EXTRA_ID_ALARMA", alarmaId)
                     putExtra("EXTRA_SOUND_URI", soundUri)
@@ -62,8 +61,10 @@ class AlarmaReceiver : BroadcastReceiver() {
                 Log.d("AlarmaReceiver", "Vibrar: $vibrate")
                 Log.d("AlarmaReceiver", "Etiqueta de la Alarma: $label")
 
-                // Mostrar notificación con acciones
-                mostrarNotificacionAlarma(context, "Alarma Activada", label)
+                val sharedPreferences = context.getSharedPreferences("nombre_de_tus_preferences", Context.MODE_PRIVATE)
+                val snoozeTime = sharedPreferences.getInt("snoozeTime", 3) // El valor predeterminado es 3
+
+       //         mostrarNotificacionAlarma(context,  label, alarmaId, soundUri, vibrate, snoozeTime)
             }
 
             ACTION_STOP_ALARM -> {
@@ -89,61 +90,58 @@ class AlarmaReceiver : BroadcastReceiver() {
                     Log.d("AlarmaReceiver", "Reprogramada alarma SNOOZE con ID: $alarmaId para $timestamp")
                 }
             }
+
         }
     }
 
-    private fun mostrarNotificacionAlarma(context: Context, title: String, content: String) {
+        private fun mostrarNotificacionAlarma(context: Context, label: String, alarmaId: Int, soundUri: String?, vibrate: Boolean, snoozeTime: Int)  {
         // Esta función privada se utiliza para mostrar una notificación de alarma en el dispositivo.
-        val notificationManager = NotificationManagerCompat.from(context)
+            val notificationManager = NotificationManagerCompat.from(context)
         // Se obtiene una instancia de NotificationManager para enviar notificaciones.
+
 
         // Se construye la notificación con un título, texto y un icono pequeño.
         Log.d("AlarmaReceiver", "Preparando para mostrar notificación")
-        val notificationBuilder = NotificationCompat.Builder(context, "alarma_channel_id")
-            .setContentTitle(title)
-            .setContentText(content)
-            .setSmallIcon(androidx.core.R.drawable.ic_call_answer_low)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            val notificationBuilder = NotificationCompat.Builder(context, "alarma_channel_id")
+            //    .setContentTitle(title)
+                .setContentText(label)
+                .setSmallIcon(androidx.core.R.drawable.ic_call_answer_low)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-        // Acción para detener la alarma
-        val stopIntent = Intent(context, AlarmaService::class.java).apply {
-            action = ACTION_STOP_ALARM
-        }
-        val stopPendingIntent = PendingIntent.getBroadcast(
-            context, 0, stopIntent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-        notificationBuilder.addAction(
-            androidx.core.R.drawable.ic_call_answer_low,
-            "Detener",
-            stopPendingIntent
-        )
-        // Acción para posponer la alarma
-        val snoozeIntent = Intent(context, AlarmaService::class.java).apply {
-            action = ACTION_SNOOZE
-        }
-        val snoozePendingIntent = PendingIntent.getBroadcast(
-            context, 1, snoozeIntent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-        notificationBuilder.addAction(
-            androidx.core.R.drawable.ic_call_answer_low,
-            "Snooze",
-            snoozePendingIntent
-        )
+            // Acción para detener la alarma desde la notificación
+            val stopIntent = Intent(context, AlarmaService::class.java).apply {
+                action = ACTION_STOP_ALARM
+                putExtra("EXTRA_ORIGIN_NOTIFICATION", true)
+            }
+            val stopPendingIntent = PendingIntent.getService(
+                context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            notificationBuilder.addAction(
+                androidx.core.R.drawable.ic_call_answer_low, "Detener", stopPendingIntent
+            )
 
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // El permiso no está concedido. Si es necesario, puedes solicitar el permiso aquí.
-            Log.d("AlarmaReceiver", "Permiso POST_NOTIFICATIONS no concedido")
-        } else {
-            // El permiso está concedido. Puedes mostrar la notificación.
-            notificationManager.notify(1, notificationBuilder.build());
-            Log.d("AlarmaReceiver", "Notificación enviada al sistema")
-        }
+            val snoozeIntent = Intent(context, AlarmaService::class.java).apply {
+                action = ACTION_SNOOZE
+                putExtra("EXTRA_SNOOZE_TIME", snoozeTime)
+                putExtra("EXTRA_ID_ALARMA", alarmaId)
+                putExtra("EXTRA_SOUND_URI", soundUri)
+                putExtra("EXTRA_VIBRATE", vibrate)
+                putExtra("EXTRA_LABEL", label)
+                putExtra("EXTRA_ORIGIN_NOTIFICATION", true)
+            }
+            val snoozePendingIntent = PendingIntent.getService(
+                context, 1, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            notificationBuilder.addAction(
+                androidx.core.R.drawable.ic_call_answer_low, "Snooze", snoozePendingIntent
+            )
+
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                Log.d("AlarmaReceiver", "Permiso POST_NOTIFICATIONS no concedido")
+            } else {
+                notificationManager.notify(1, notificationBuilder.build())
+                Log.d("AlarmaReceiver", "Notificación enviada al sistema")
+            }
     }
 
     private fun reprogramarAlarmasActivas(context: Context) {

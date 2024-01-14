@@ -86,49 +86,6 @@ private val DarkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
-private val LightWeatherColors = lightColorScheme(
-    primary = md_theme_light_primary_weather,
-    onPrimary = md_theme_light_onPrimary_weather,
-    secondary = md_theme_light_secondary_weather,
-    onSecondary = md_theme_light_onSecondary_weather,
-    background = md_theme_light_background_weather,
-    onBackground = Color.Black,
-    surface = md_theme_light_surface_weather,
-    onSurface = Color.Black,
-    // ... otros colores del clima para el tema claro
-)
-
-private val DarkWeatherColors = darkColorScheme(
-    primary = md_theme_dark_primary_weather,
-    onPrimary = md_theme_dark_onPrimary_weather,
-    secondary = md_theme_dark_secondary_weather,
-    onSecondary = md_theme_dark_onSecondary_weather,
-    background = md_theme_dark_background_weather,
-    onBackground = Color.White,
-    surface = md_theme_dark_surface_weather,
-    onSurface = Color.White,
-)
-
-
-
-@Composable
-fun WeatherColorsTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
-) {
-    val colorSchemeWeather = if (!useDarkTheme) {
-        Log.d("WeatherColorsTheme", "Usando LightWeatherColors")
-        LightWeatherColors
-    } else {
-        Log.d("WeatherColorsTheme", "Usando DarkWeatherColors")
-        DarkWeatherColors
-    }
-    MaterialTheme(
-        colorScheme = colorSchemeWeather,
-        typography = Typography,
-        content = content
-    )
-}
 
 @Composable
 fun AlarmadespertadorTheme(

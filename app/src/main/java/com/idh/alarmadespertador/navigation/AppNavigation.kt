@@ -15,7 +15,6 @@ import com.idh.alarmadespertador.screens.topupscreens.ConfigurarFormato
 import com.idh.alarmadespertador.screens.alarmascreens.AlarmaScreen
 import com.idh.alarmadespertador.screens.climascreens.ClimaScreen
 import com.idh.alarmadespertador.screens.meditacionscreen.MeditacionScreen
-import com.idh.alarmadespertador.screens.meditacionscreen.updatetemporizador.UpdateTemporizadorScreen
 import com.idh.alarmadespertador.screens.topupscreens.AcercaDe
 import com.idh.alarmadespertador.screens.topupscreens.EstadisticaMeditacion
 
@@ -52,21 +51,6 @@ fun AppNavigation(
         }
         composable(NavScreen.EstadisticaMeditacion.name) {
             EstadisticaMeditacion()
-        }
-        composable(
-            route = "rutaDeUpdateTemporizadorScreen/{temporizadorId}", // Usa la ruta directamente
-            arguments = listOf(
-                navArgument("temporizadorId") {
-                    type = NavType.IntType
-                }
-            )
-        ) { backStackEntry ->
-            val temporizadorId = backStackEntry.arguments?.getInt("temporizadorId") ?: 0
-            UpdateTemporizadorScreen(
-                navigateBack = {
-                    navController.popBackStack()
-                }
-            )
         }
     }
 }

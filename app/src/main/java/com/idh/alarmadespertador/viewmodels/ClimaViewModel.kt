@@ -161,7 +161,8 @@ class ClimaViewModel @Inject constructor(
             minTemp = weatherData.main.tempMin,
             amanecer = formatTime(weatherData.sys.sunrise),
             atardecer = formatTime(weatherData.sys.sunset),
-            seSiente = weatherData.main.feelsLike
+            seSiente = weatherData.main.feelsLike,
+            id = weatherData.id
         )
     }
 

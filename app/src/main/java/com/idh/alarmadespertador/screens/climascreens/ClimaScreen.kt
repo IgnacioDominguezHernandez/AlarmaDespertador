@@ -1,6 +1,7 @@
 package com.idh.alarmadespertador.screens.climascreens
 
 import android.Manifest
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -26,16 +27,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.Calendar
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.idh.alarmadespertador.domain.models.clima.ClimaData
-import com.idh.alarmadespertador.ui.theme.WeatherColorsTheme
 import com.idh.alarmadespertador.ui.theme.md_theme_light_onPrimary
 import com.idh.alarmadespertador.viewmodels.ClimaViewModel
+import java.time.LocalTime
 import kotlin.math.roundToInt
+
+
 
 @Composable
 fun ClimaScreen(climaViewModel: ClimaViewModel = hiltViewModel()) {
@@ -205,14 +209,22 @@ fun SearchBar(
     )
 }
 
+
 @Composable
 fun WeatherCard(weatherData: ClimaData) {
+
+    // Imprimir en log el código de condición original
+    Log.d("WeatherCard", "ID recibido: ${weatherData.id}, Código de condición: ${weatherData.icono}")
+
+    // Usa directamente el código de condición de weatherData para la URL del ícono
+    val iconUrl = "https://openweathermap.org/img/wn/${weatherData.icono}@2x.png"
+    
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -224,9 +236,9 @@ fun WeatherCard(weatherData: ClimaData) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AsyncImage(
-                    model = weatherData.icono, // URL completa del icono
+                    model = iconUrl, // URL completa del icono
                     contentDescription = "Weather Icon",
-                    modifier = Modifier.size(48.dp) // Tamaño del icono
+                    modifier = Modifier.size(100.dp) // Tamaño del icono
                 )
                 Text(
                     text = "${weatherData.temperatura.roundToInt()}°C",
@@ -248,9 +260,11 @@ fun WeatherCard(weatherData: ClimaData) {
     }
 }
 
+
 @Composable
 fun weatherDetails(weatherData: ClimaData) {
     val details = listOf(
+        "id" to weatherData.id.toString(),
         "Amanecer" to weatherData.amanecer,
         "Atardecer" to weatherData.atardecer,
         "Sensación térmica" to "${weatherData.seSiente.roundToInt()}°C",
@@ -300,7 +314,8 @@ fun ClimaScreenPreview() {
         minTemp = 22.0,
         amanecer = "06:00",
         atardecer = "20:00",
-        seSiente = 26.0
+        seSiente = 26.0,
+        id = 500
     )
 
     WeatherCard(weatherData = mockWeatherData)

@@ -11,5 +11,6 @@ data class ClimaData(
     val minTemp: Double,
     val amanecer: String,
     val atardecer: String,
-    val seSiente: Double
+    val seSiente: Double,
+    val id: Int,
 )

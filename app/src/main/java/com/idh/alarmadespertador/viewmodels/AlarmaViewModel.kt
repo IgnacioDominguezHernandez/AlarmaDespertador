@@ -76,10 +76,12 @@ class AlarmaViewModel @Inject constructor(
         }
     }
 
-
     // Eliminar una alarma. Usamos un hilo IO para liberar el hilo principal
     fun eliminarAlarma(alarma: Alarma) {
         viewModelScope.launch(Dispatchers.IO) {
+
+            cancelarAlarma(alarma)
+
             repo.deleteAlarmaFromRoom(alarma)
         }
     }
@@ -133,7 +135,7 @@ class AlarmaViewModel @Inject constructor(
             action = "com.idh.alarmadespertador.ALARMA_ACTIVADA"
             putExtra("EXTRA_ID_ALARMA", alarma.id)
             putExtra("EXTRA_SOUND_URI", alarma.soundUri)
-            putExtra("PROGRAMAR ALARMA", "PROGRAMANDO ALARMA")
+      //      putExtra("PROGRAMAR ALARMA", "PROGRAMANDO ALARMA")
             putExtra("EXTRA_VIBRATE", alarma.vibrate)
             putExtra("EXTRA_LABEL", alarma.label)
         }
