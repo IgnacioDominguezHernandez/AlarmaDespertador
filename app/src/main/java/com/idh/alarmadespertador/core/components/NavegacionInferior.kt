@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.idh.alarmadespertador.domain.models.ItemsBottomNav.*
+import com.idh.alarmadespertador.domain.models.ItemsBottomNav.Itembottomnav1
+import com.idh.alarmadespertador.domain.models.ItemsBottomNav.Itembottomnav3
+import com.idh.alarmadespertador.domain.models.ItemsBottomNav.Itembottomnav4
 import com.idh.alarmadespertador.navigation.currentRoute
 
 //@Composable: parte de la UI de Jetpack Compose. Puede ser reutilizada en diferentes partes de la aplicación

@@ -2,11 +2,8 @@ package com.idh.alarmadespertador.domain.models
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Assessment
-import androidx.compose.material.icons.outlined.DarkMode
-import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Snooze
-import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.idh.alarmadespertador.navigation.NavScreen
 

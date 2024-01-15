@@ -8,11 +8,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.idh.alarmadespertador.R
-import com.idh.alarmadespertador.domain.repository.TemporizadorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
 import javax.inject.Inject
+
 @HiltViewModel
 class MeditacionViewModel @Inject constructor(
     @ApplicationContext private val context: Context,

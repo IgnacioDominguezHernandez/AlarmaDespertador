@@ -60,6 +60,7 @@ fun DialogoMeditacion(
     var showDialogdos by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
+    //Cálculo de los tiempos y gestión de la Melodia
     LaunchedEffect(viewModel.isPlaying.value) {
         coroutineScope.launch {
             while (viewModel.isPlaying.value && elapsedTimeMillis > 0) {
@@ -72,7 +73,7 @@ fun DialogoMeditacion(
             }
         }
     }
-
+    //Dialogo si se termina el tiempo de meditación.Llama a la BD.
     if (showDialogdos) {
         viewModel.pausarOReanudarReproduccion()
         AlertDialog(
@@ -120,7 +121,7 @@ fun DialogoMeditacion(
     DisposableEffect(Unit) {
         onDispose {
             if (viewModel.isPlaying.value && mediaPlayer?.isPlaying == true) {
-                mediaPlayer?.stop()
+                mediaPlayer.stop()
             }
         }
     }
@@ -151,6 +152,7 @@ fun DialogoMeditacion(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
+                //Aquí se muestra el tiempo restante
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "${String.format("%02d:%02d", minutes, seconds)}",

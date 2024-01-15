@@ -2,27 +2,21 @@ package com.idh.alarmadespertador.screens.alarmascreens.components
 
 import android.Manifest
 import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.Ringtone
-import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.idh.alarmadespertador.core.constants.Constantes.*
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_ACTIVATE_ALARM
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_SNOOZE
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_STOP_ALARM
 
-    class AlarmaReceiver : BroadcastReceiver() {
+class AlarmaReceiver : BroadcastReceiver() {
 
     // La clase AlarmaReceiver extiende de BroadcastReceiver para recibir eventos de broadcast (difusión).
     // Específicamente, esta clase se utiliza para manejar eventos relacionados con alarmas en la aplicación.

@@ -98,6 +98,7 @@ class AlarmaActivadaActivity : ComponentActivity() {
             putExtra("EXTRA_VIBRATE", vibrate)
             putExtra("EXTRA_LABEL", label)
         }
+        Log.d("AlarmaActivadaActivity", "Enviando alarmaIdAlarmaActivadaActivity: $alarmaId")
         startService(snoozeIntent)
         finish()
     }

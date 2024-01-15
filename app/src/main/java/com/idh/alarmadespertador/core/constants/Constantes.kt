@@ -1,7 +1,5 @@
 package com.idh.alarmadespertador.core.constants
 
-import com.idh.alarmadespertador.R
-
 
 class Constantes {
     companion object {

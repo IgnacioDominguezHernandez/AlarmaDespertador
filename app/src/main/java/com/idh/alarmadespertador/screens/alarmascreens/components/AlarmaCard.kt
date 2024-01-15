@@ -17,10 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
-import com.idh.alarmadespertador.domain.models.Alarma
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.idh.alarmadespertador.domain.models.Alarma
 import java.time.Instant
 import java.time.LocalTime
 import java.time.ZoneId

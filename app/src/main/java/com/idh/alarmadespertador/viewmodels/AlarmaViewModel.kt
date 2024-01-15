@@ -55,6 +55,7 @@ class AlarmaViewModel @Inject constructor(
                 programarOVerificarAlarma(alarma, alarma.tiempoActivacion)
             }
         }
+        Log.d("AlarmaService", "crearAlarma con ID: ${alarma.id}")
     }
 
     fun actualizarAlarma(alarma: Alarma) {
@@ -74,6 +75,7 @@ class AlarmaViewModel @Inject constructor(
                 cancelarAlarma(alarmaActualizada)
             }
         }
+        Log.d("AlarmaService", "actualizarAlarma con ID: ${alarma.id}")
     }
 
     // Eliminar una alarma. Usamos un hilo IO para liberar el hilo principal
@@ -84,6 +86,7 @@ class AlarmaViewModel @Inject constructor(
 
             repo.deleteAlarmaFromRoom(alarma)
         }
+        Log.d("AlarmaService", "eliminarAlarma con ID: ${alarma.id}")
     }
 
     //función para solicitar permiso para establecer alarmas exactas en Android
@@ -100,6 +103,7 @@ class AlarmaViewModel @Inject constructor(
         } else {
 
         }
+
     }
 
     //Función para programar una alarma o verificar si es posible programar alarmas exactas en el dispositivo
@@ -109,6 +113,7 @@ class AlarmaViewModel @Inject constructor(
     // entonces se procede a programar la alarma llamando a programarAlarma(alarma, tiempoActivacion).
     // Esto se debe a que en Android 12 y versiones posteriores, se requieren permisos especiales para programar alarmas exactas.
     fun programarOVerificarAlarma(alarma: Alarma, tiempoActivacion: Long) {
+
         val alarmManager = appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()) {
@@ -118,6 +123,8 @@ class AlarmaViewModel @Inject constructor(
             // Pedir permiso o notificar al usuario
             pedirPermisoParaAlarmaExacta(appContext)
         }
+        Log.d("AlarmaService", "programarOVerificarAlarma con ID: ${alarma.id}")
+
     }
 
     //Se encarga de establecer una alarma en el sistema operativo Android utilizando la clase AlarmManager
@@ -130,10 +137,13 @@ class AlarmaViewModel @Inject constructor(
     //Se usan banderas FLAG_UPDATE_CURRENT y FLAG_IMMUTABLE para asegurarse
     // de que el PendingIntent se actualice con los últimos datos y sea inmutable respectivamente
     fun programarAlarma(alarma: Alarma, tiempoActivacion: Long) {
+
+
+
         val alarmManager = appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(appContext, AlarmaReceiver::class.java).apply {
             action = "com.idh.alarmadespertador.ALARMA_ACTIVADA"
-            putExtra("EXTRA_ID_ALARMA", alarma.id)
+            putExtra("EXTRA_ID_ALARMA", alarma.id.toInt())
             putExtra("EXTRA_SOUND_URI", alarma.soundUri)
       //      putExtra("PROGRAMAR ALARMA", "PROGRAMANDO ALARMA")
             putExtra("EXTRA_VIBRATE", alarma.vibrate)
@@ -145,6 +155,7 @@ class AlarmaViewModel @Inject constructor(
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE // Cambio aquí
         )
+        Log.d("AlarmaService", "programarAlarma con ID: ${alarma.id}")
 
         Log.d(
             "AlarmaManager",
@@ -183,21 +194,24 @@ class AlarmaViewModel @Inject constructor(
     // Esto efectivamente cancela cualquier alarma que haya sido programada con ese PendingIntent específico.
 
     fun cancelarAlarma(alarma: Alarma) {
-        val intent = Intent(appContext, AlarmaReceiver::class.java).apply {
-            action = "com.idh.alarmadespertador.ALARMA_ACTIVADA"
-            putExtra("EXTRA_ID_ALARMA", alarma.id)
-            putExtra("EXTRA_SOUND_URI", alarma.soundUri)
-            putExtra("PROGRAMAR ALARMA", "PROGRAMANDO ALARMA")
-            putExtra("EXTRA_VIBRATE", alarma.vibrate)
-            putExtra("EXTRA_LABEL", alarma.label)
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            appContext,
-            alarma.id.toInt(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
 
+
+            val intent = Intent(appContext, AlarmaReceiver::class.java).apply {
+                action = "com.idh.alarmadespertador.ALARMA_ACTIVADA"
+                putExtra("EXTRA_ID_ALARMA", alarma.id.toInt())
+                putExtra("EXTRA_SOUND_URI", alarma.soundUri)
+                putExtra("PROGRAMAR ALARMA", "PROGRAMANDO ALARMA")
+                putExtra("EXTRA_VIBRATE", alarma.vibrate)
+                putExtra("EXTRA_LABEL", alarma.label)
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                appContext,
+                alarma.id.toInt(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+        Log.d("AlarmaService", "cancelarAlarma con ID: ${alarma.id}")
         val alarmManager = appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pendingIntent)
 
@@ -235,6 +249,7 @@ class AlarmaViewModel @Inject constructor(
     //La función calcularProximoTiempoActivacion calcula el próximo tiempo de activación
     // para una alarma recurrente basada en los días de la semana que ha sido programada para sonar.
     fun calcularProximoTiempoActivacion(alarma: Alarma): Long {
+
         val calendario = Calendar.getInstance()
         calendario.timeInMillis = alarma.tiempoActivacion
 

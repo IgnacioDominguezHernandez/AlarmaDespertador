@@ -3,7 +3,6 @@ package com.idh.alarmadespertador.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.idh.alarmadespertador.core.constants.Constantes.Companion.TEMPORIZADOR_TABLE
 import com.idh.alarmadespertador.data.network.AlarmaDao
 import com.idh.alarmadespertador.data.network.AplicacionDB
 import com.idh.alarmadespertador.data.network.TemporizadorDao

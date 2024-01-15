@@ -29,6 +29,7 @@ fun MeditacionScreen(
     topAppViewModel: TopAppViewModel = hiltViewModel()
 ) {
 
+    //Botones inhablitados una vez pulsado iniciar meditación
     var elementosHabilitados by remember { mutableStateOf(true) }
     var duracionSeleccionada by remember { mutableStateOf(10f) } // Duración predeterminada en float
     // var mostrarDialogo by remember { mutableStateOf(false) }
@@ -74,6 +75,7 @@ fun MeditacionScreen(
             )
         }
     }
+    //Se abre un dialog con la música y la cuenta atrás
     if (viewModel.openDialog) {
         DialogoMeditacion(
             viewModel = viewModel,

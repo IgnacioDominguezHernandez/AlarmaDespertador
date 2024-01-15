@@ -2,10 +2,8 @@ package com.idh.alarmadespertador.screens.topupscreens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -31,6 +29,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun EstadisticaMeditacion(viewModel: TopAppViewModel = hiltViewModel()) {
 
+    //Pantalla de estadísticas
     var veces = 0
     var segundos = 0
     var completado = 0
@@ -39,6 +38,7 @@ fun EstadisticaMeditacion(viewModel: TopAppViewModel = hiltViewModel()) {
 
     var showDialog by remember { mutableStateOf(false) }
 
+    //Consulta a la BD
     runBlocking {
         launch(Dispatchers.IO) {
             // Realiza la consulta en un hilo secundario
@@ -56,6 +56,7 @@ fun EstadisticaMeditacion(viewModel: TopAppViewModel = hiltViewModel()) {
             }
         }
     }
+    //Interfaz para mostrar datos
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -102,6 +103,7 @@ fun EstadisticaMeditacion(viewModel: TopAppViewModel = hiltViewModel()) {
 
         Spacer(modifier = Modifier.height(48.dp))
 
+        //Muestra Dialogo
         Button(
             onClick = {
                 showDialog = true
@@ -126,6 +128,7 @@ fun EstadisticaMeditacion(viewModel: TopAppViewModel = hiltViewModel()) {
                 )
                 Spacer(modifier = Modifier.height(6.dp))
             },
+            //Llama a la BD para hacer un Delete
             confirmButton = {
                 Button(
                     onClick = {

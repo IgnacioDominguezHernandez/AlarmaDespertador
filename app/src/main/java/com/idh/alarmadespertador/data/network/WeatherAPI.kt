@@ -1,7 +1,6 @@
 package com.idh.alarmadespertador.data.network
 
 import com.idh.alarmadespertador.domain.models.clima.OpenWeatherMap
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

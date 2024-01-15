@@ -5,7 +5,7 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
-val room_version = "2.6.0"
+val room_version = "2.6.1"
 
 android {
     namespace = "com.idh.alarmadespertador"
@@ -68,10 +68,10 @@ android {
 
 dependencies {
 
-    implementation ("androidx.appcompat:appcompat:1.4.1")
+    implementation ("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2023.10.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -86,9 +86,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:x.y.z")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation ("androidx.compose.material3:material3:1.1.2@aar (classes.jar)")
     //iconos extendidos
     implementation ("androidx.compose.material:material-icons-extended:1.5.4")
@@ -98,8 +98,8 @@ dependencies {
     implementation ("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
     //Hilt
-    implementation("com.google.dagger:hilt-android:2.48.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.48.1")
+    implementation("com.google.dagger:hilt-android:2.50")
+    kapt("com.google.dagger:hilt-android-compiler:2.50")
     //Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -108,9 +108,9 @@ dependencies {
     //Gson
     implementation ("com.google.code.gson:gson:2.10.1")
 
-    implementation ("com.google.android.gms:play-services-location:18.0.0")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 
-    implementation ("androidx.compose.material3:material3:1.1.0-alpha06")
+    implementation ("androidx.compose.material3:material3:1.1.2")
 }

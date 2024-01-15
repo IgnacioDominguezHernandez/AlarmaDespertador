@@ -15,8 +15,6 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import com.idh.alarmadespertador.R
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_ACTIVATE_ALARM
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_SNOOZE
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ACTION_STOP_ALARM
@@ -114,6 +112,7 @@ class AlarmaService : Service() {
             putExtra("EXTRA_VIBRATE", vibrate)
             putExtra("EXTRA_LABEL", label)
         }
+        Log.d("AlarmaService", "Enviando alarmaIdAlarmaService: $alarmaId")
         startActivity(intent)
     }
     fun snoozeAlarma(snoozeMinutes: Int, alarmaId: Int, soundUri: String, vibrate: Boolean, label: String) {

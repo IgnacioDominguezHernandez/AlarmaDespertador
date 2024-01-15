@@ -2,20 +2,18 @@ package com.idh.alarmadespertador.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.navArgument
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.ALARMA_SCREEN
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.CLIMA_SCREEN
 import com.idh.alarmadespertador.core.constants.Constantes.Companion.MEDITACION_SCREEN
-import com.idh.alarmadespertador.screens.topupscreens.ConfigurarApariencia
-import com.idh.alarmadespertador.screens.topupscreens.ConfigurarFormato
 import com.idh.alarmadespertador.screens.alarmascreens.AlarmaScreen
 import com.idh.alarmadespertador.screens.climascreens.ClimaScreen
 import com.idh.alarmadespertador.screens.meditacionscreen.MeditacionScreen
 import com.idh.alarmadespertador.screens.topupscreens.AcercaDe
+import com.idh.alarmadespertador.screens.topupscreens.ConfigurarApariencia
+import com.idh.alarmadespertador.screens.topupscreens.ConfigurarFormato
 import com.idh.alarmadespertador.screens.topupscreens.EstadisticaMeditacion
 
 /* Cada llamada a Composable define una ruta y su pantalla asociada.

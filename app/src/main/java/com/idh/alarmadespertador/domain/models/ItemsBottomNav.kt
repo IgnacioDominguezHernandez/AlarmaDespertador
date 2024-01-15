@@ -2,12 +2,7 @@ package com.idh.alarmadespertador.domain.models
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Alarm
-import androidx.compose.material.icons.outlined.BorderBottom
 import androidx.compose.material.icons.outlined.LocalFlorist
-import androidx.compose.material.icons.outlined.Radio
-import androidx.compose.material.icons.outlined.Timer
-import androidx.compose.material.icons.outlined.WatchLater
-import androidx.compose.material.icons.outlined.Waves
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.idh.alarmadespertador.navigation.NavScreen
