@@ -1,8 +1,8 @@
-#  Alarm¬Weather graduation project
+#  Alarm¬Weather graduation project 🎓
 
 Graduation project, completed as part of the Associate Degree in Multiplatform Application Development(DAM). 
 
-# Description 
+# Description  ⏰☀️🧘
 
 Android alarm clock app with alarm, meditation with music, and weather features for both current and searched locations. 
 Developed over a four-month period using Android Studio and Kotlin, featuring Jetpack Compose for UI design, Material Design 3 for aesthetics, 
